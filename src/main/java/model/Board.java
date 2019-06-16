@@ -48,10 +48,11 @@ public class Board {
     this.turn = IPiece.Color.WHITE;
     this.tiles = HashMap.empty();
     for (int x = 0; x < size._1(); x++) {
+      Map<Integer, Tile> m = HashMap.empty();
       for (int y = 0; y < size._2(); y++) {
-        Tile tile = new Tile(Option.none(), new Tuple2<>(x, y));
-        tiles = tiles.put(x, HashMap.of(y, tile));
+        m = m.put(y, new Tile(Option.none(), new Tuple2<>(x, y)));
       }
+      tiles = tiles.put(x, m);
     }
     this.m2v = m2v;
     this.size = size;
@@ -173,6 +174,7 @@ public class Board {
 
   /**
    * Changes the turn.
+   * @return a new board with the updated turn.
    */
   public Board toggleTurn() {
     if (turn == IPiece.Color.WHITE) {
