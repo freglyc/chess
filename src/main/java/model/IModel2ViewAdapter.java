@@ -21,9 +21,15 @@ public interface IModel2ViewAdapter {
    */
   void addPiece(String piece, Tuple2<Integer, Integer> location);
 
+  /**
+   * Removes pieces from the board in the view.
+   * @param location - The location of the piece to remove.
+   */
   void removePiece(Tuple2<Integer, Integer> location);
 
-  void move(String name, Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to);
-
+  /**
+   * Displays popup where you can upgrade pawns.
+   * @param location - The location of the pawn to upgrade.
+   */
   void displayPawnChange(Tuple2<Integer, Integer> location);
 }

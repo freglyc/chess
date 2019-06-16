@@ -122,16 +122,16 @@ public class Board {
    * @param p - the piece to add.
    * @return a new board with the added piece.
    */
-  public Board addPiece(IPiece p) {
-      Map<Integer, Map<Integer, Tile>> newTiles = tiles.map((k1, v1) -> new Tuple2<>(k1,
-          v1.map((k2, v2) -> {
-            Tile newTile = v2;
-            if (v2.getLocation().equals(p.getLocation())) {
-              newTile = newTile.addPiece(p);
-            }
-            return new Tuple2<>(k2, newTile);
-          })));
-    return new Board(turn, newTiles, m2v);
+  public Board addPiece(Option<IPiece> p) {
+    return p.fold(() -> this,
+        x -> new Board(turn, tiles.map((k1, v1) -> new Tuple2<>(k1,
+            v1.map((k2, v2) -> {
+              Tile newTile = v2;
+              if (v2.getLocation().equals(p.get().getLocation())) {
+                newTile = newTile.addPiece(p.get());
+              }
+              return new Tuple2<>(k2, newTile);
+        }))), m2v));
   }
 
   /**
@@ -140,15 +140,14 @@ public class Board {
    * @return a new board with the piece removed.
    */
   public Board removePiece(Tuple2<Integer, Integer> location) {
-    Map<Integer, Map<Integer, Tile>> newTiles = tiles.map((k1, v1) -> new Tuple2<>(k1,
+    return new Board(turn, tiles.map((k1, v1) -> new Tuple2<>(k1,
         v1.map((k2, v2) -> {
           Tile newTile = v2;
           if (v2.getLocation().equals(location)) {
             newTile = newTile.removePiece();
           }
           return new Tuple2<>(k2, newTile);
-        })));
-    return new Board(turn, newTiles, m2v);
+        }))), m2v);
   }
 
   /**
@@ -158,8 +157,7 @@ public class Board {
    * @return a new board with the updated state.
    */
   public Board move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
-    // TODO
-    return new Board(null, null, null);
+    return this.getPiece(from).fold(() -> this, p -> this.addPiece(Option.of(p.move(to))));
   }
 
   /**
@@ -169,9 +167,19 @@ public class Board {
    * @param newPiece - The new piece.
    * @return a new board with the updated piece.
    */
-  public Board changePiece(Tuple2<Integer, Integer> location, IPiece oldPiece, IPiece newPiece) {
-    // TODO
-    return new Board(null, null, null);
+  public Board changePiece(Tuple2<Integer, Integer> location, Option<IPiece> oldPiece, Option<IPiece> newPiece) {
+    return oldPiece.fold(() -> this, op -> newPiece.fold(() -> this, np -> this.removePiece(location).addPiece(newPiece)));
+  }
+
+  /**
+   * Changes the turn.
+   */
+  public Board toggleTurn() {
+    if (turn == IPiece.Color.WHITE) {
+      return new Board(IPiece.Color.BLACK, tiles, m2v);
+    } else {
+      return new Board(IPiece.Color.WHITE, tiles, m2v);
+    }
   }
 
   /**

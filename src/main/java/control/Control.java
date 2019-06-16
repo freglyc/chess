@@ -4,7 +4,6 @@ import io.vavr.Tuple2;
 import io.vavr.collection.List;
 import model.IModel2ViewAdapter;
 import model.Model;
-import model.Pieces.IPiece;
 import model.Pieces.Pieces;
 import view.IView2ModelAdapter;
 import view.View;
@@ -48,11 +47,6 @@ public class Control {
       }
 
       @Override
-      public void move(String name, Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
-        view.move(name, from, to);
-      }
-
-      @Override
       public void displayPawnChange(Tuple2<Integer, Integer> location) {
         view.displayPawnChange(location);
       }
@@ -60,23 +54,19 @@ public class Control {
 
     view = new View(new IView2ModelAdapter() {
 
-      // TODO should not be doing model.getBoard.something. Should only be model.something. Pretty much clearly define behavior in model.
-
       @Override
       public List<Tuple2<Integer, Integer>> getValidMoves(Tuple2<Integer, Integer> location) {
-        return model.getBoard().getPiece(location).get().getValidMoves(model.getBoard());
+        return model.getValidMoves(location);
       }
 
       @Override
       public void move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
-        model.getBoard().move(from, to);
+        model.move(from, to);
       }
 
       @Override
       public void changePiece(Tuple2<Integer, Integer> location, String oldPiece, String newPiece) {
-        IPiece oldP = model.getBoard().getPiece(location).get();
-        IPiece newP = Pieces.getInstance().createPiece(newPiece, location).get();
-        model.getBoard().changePiece(location, oldP, newP);
+        model.changePiece(location, model.getPiece(location), Pieces.getInstance().createPiece(newPiece, location));
       }
     });
   }

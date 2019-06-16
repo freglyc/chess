@@ -2,6 +2,8 @@ package model;
 
 import model.Pieces.*;
 import io.vavr.Tuple2;
+import io.vavr.collection.List;
+import io.vavr.control.Option;
 
 /**
  * Model.
@@ -83,17 +85,44 @@ public class Model {
    * @param piece - The piece to add.
    */
   private void addPiece(IPiece piece) {
-    board = board.addPiece(piece); // adds to model.
-    m2v.addPiece(piece.toString(), piece.getLocation()); // adds to the view.
+    board = board.addPiece(Option.of(piece)); // Adds to model.
+    m2v.addPiece(piece.toString(), piece.getLocation()); // Adds to the view.
   }
 
   /**
-   * Board getter.
-   * @return the board.
+   * Moves a piece from one location to another.
+   * @param from - Where the piece is moving from.
+   * @param to - Where the piece is moving to.
    */
-  public Board getBoard() {
-    return board;
+  public void move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
+    board = board.move(from, to);
   }
 
+  /**
+   * Gets a piece at a given location.
+   * @param location - The location of the piece to get.
+   * @return optional piece.
+   */
+  public Option<IPiece> getPiece(Tuple2<Integer, Integer> location) {
+    return board.getPiece(location);
+  }
 
+  /**
+   * Changes the piece.
+   * @param location - The location of the piece.
+   * @param oldPiece - The old piece.
+   * @param newPiece - The new piece.
+   */
+  public void changePiece(Tuple2<Integer, Integer> location, Option<IPiece> oldPiece, Option<IPiece> newPiece) {
+    board = board.changePiece(location, oldPiece, newPiece);
+  }
+
+  /**
+   * Gets a list of valid moves for the piece at the given location.
+   * @param location - The location of the piece.
+   * @return a list of valid moves.
+   */
+  public List<Tuple2<Integer, Integer>> getValidMoves(Tuple2<Integer, Integer> location) {
+    return getPiece(location).fold(List::empty, p -> p.getValidMoves(board));
+  }
 }

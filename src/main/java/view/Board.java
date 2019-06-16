@@ -204,7 +204,8 @@ public class Board extends JPanel implements MouseListener {
       repaint();
     } else if (valid.contains(tile.getTileLocation())) {
       // If a piece is currently selected and a valid location was clicked then move the piece.
-      v2m.move(selectedTile.getPiece().getPieceLocation(), tile.getTileLocation());
+      v2m.move(selectedTile.getPiece().getPieceLocation(), tile.getTileLocation()); // Update model.
+      move(selectedTile.getPiece().getName(),selectedTile.getPiece().getPieceLocation(), tile.getTileLocation()); // Update view.
       // Updates the valid tiles.
       for (Tuple2<Integer, Integer> loc : valid) {
         board[loc._1()][loc._2()].toggleSelected();
