@@ -4,6 +4,8 @@ import io.vavr.Tuple2;
 import io.vavr.collection.List;
 import model.IModel2ViewAdapter;
 import model.Model;
+import model.Pieces.IPiece;
+import model.Pieces.Pieces;
 import view.IView2ModelAdapter;
 import view.View;
 
@@ -58,6 +60,8 @@ public class Control {
 
     view = new View(new IView2ModelAdapter() {
 
+      // TODO should not be doing model.getBoard.something. Should only be model.something. Pretty much clearly define behavior in model.
+
       @Override
       public List<Tuple2<Integer, Integer>> getValidMoves(Tuple2<Integer, Integer> location) {
         return model.getBoard().getPiece(location).get().getValidMoves(model.getBoard());
@@ -65,14 +69,14 @@ public class Control {
 
       @Override
       public void move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
-        if (model.getBoard().getPiece(from) != null) {
-          model.getBoard().move(model.getBoard().getPiece(from).get(), to);
-        }
+        model.getBoard().move(from, to);
       }
 
       @Override
       public void changePiece(Tuple2<Integer, Integer> location, String oldPiece, String newPiece) {
-        model.getBoard().changePiece(location, oldPiece, newPiece);
+        IPiece oldP = model.getBoard().getPiece(location).get();
+        IPiece newP = Pieces.getInstance().createPiece(newPiece, location).get();
+        model.getBoard().changePiece(location, oldP, newP);
       }
     });
   }

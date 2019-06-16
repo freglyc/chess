@@ -74,7 +74,7 @@ public class Model {
    * @param size - The size of the board.
    */
   private void createBoard(Tuple2<Integer, Integer> size) {
-    board = new Board(size, m2v); // Creates the board in the model.
+    board = new Board(size, m2v); // Creates a base board in the model.
     m2v.createBoard(board.getSize()); // Creates the board in the view.
   }
 
@@ -82,13 +82,13 @@ public class Model {
    * Adds a piece to the board in the model and view.
    * @param piece - The piece to add.
    */
-  private void addPiece(APiece piece) {
+  private void addPiece(IPiece piece) {
     board = board.addPiece(piece); // adds to model.
     m2v.addPiece(piece.toString(), piece.getLocation()); // adds to the view.
   }
 
   /**
-   * board getter.
+   * Board getter.
    * @return the board.
    */
   public Board getBoard() {

@@ -1,141 +1,88 @@
 package model;
 
 import io.vavr.Tuple2;
-import io.vavr.collection.*;
+import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
-import io.vavr.collection.Set;
 import io.vavr.control.Option;
-import model.Pieces.*;
+import model.Pieces.IPiece;
 
-import java.util.function.Function;
-
-import static io.vavr.API.*;
-import static io.vavr.Patterns.$None;
-import static io.vavr.Patterns.$Some;
-
-/**
- * Board used in the model.
- */
 public class Board {
-  /**
-   * Black pieces on the board.
-   */
-  private List<IPiece> blackPieces;
-  /**
-   * White pieces on the board.
-   */
-  private List<IPiece> whitePieces;
+
   /**
    * Whose turn it is.
    */
   private IPiece.Color turn;
   /**
-   * Pieces that can be added to the board.
+   * Mapping of row, col to tiles.
    */
-  private Map<String, Function<Tuple2<Integer, Integer>, IPiece>> validPieces = HashMap.empty();
-  /**
-   * The tiles that make up the board.
-   */
-  private Tile[][] board;
-  /**
-   * The board size.
-   */
-  private Tuple2<Integer, Integer> size;
+  private Map<Integer, Map<Integer, Tile>> tiles;
   /**
    * The model to view adapter.
    */
   private IModel2ViewAdapter m2v;
+  /**
+   * the size of the board.
+   */
+  private Tuple2<Integer, Integer> size;
 
   /**
    * Board Constructor.
+   * @param turn - The current player's turn.
+   * @param tiles - The tiles on the board.
+   * @param m2v - Model 2 view adapter.
+   */
+  public Board(IPiece.Color turn, Map<Integer, Map<Integer, Tile>> tiles, IModel2ViewAdapter m2v) {
+    this.turn = turn;
+    this.tiles = tiles;
+    this.m2v = m2v;
+    this.size = new Tuple2<>(tiles.size(), tiles.get(0).get().size());
+  }
+
+  /**
+   * Empty Board Constructor.
+   * @param size - The size of the board.
+   * @param m2v - Model 2 view adapter.
    */
   public Board(Tuple2<Integer, Integer> size, IModel2ViewAdapter m2v) {
-    this.size = size;
-    this.m2v = m2v;
     this.turn = IPiece.Color.WHITE;
-    blackPieces = List.empty();
-    whitePieces = List.empty();
-    board = new Tile[size._1()][size._2()];
-    this.initBoard();
-  }
-
-  /**
-   * Setup the board.
-   */
-  private void initBoard() {
-    // Creates the tiles.
-    for (int i = 0; i < size._1(); i++) {
-      for (int j = 0; j < size._2(); j++) {
-        board[i][j] = new Tile(new Tuple2<>(i, j));
+    this.tiles = HashMap.empty();
+    for (int x = 0; x < size._1(); x++) {
+      for (int y = 0; y < size._2(); y++) {
+        Tile tile = new Tile(Option.none(), new Tuple2<>(x, y));
+        tiles = tiles.put(x, HashMap.of(y, tile));
       }
     }
-    validPieces.put("WHITE_KNIGHT", (Tuple2<Integer, Integer> location) -> new Knight(APiece.Color.WHITE, location));
-    validPieces.put("BLACK_KNIGHT", (Tuple2<Integer, Integer> location) -> new Knight(APiece.Color.BLACK, location));
-    validPieces.put("WHITE_ROOK", (Tuple2<Integer, Integer> location) -> new Rook(APiece.Color.WHITE, location));
-    validPieces.put("BLACK_ROOK", (Tuple2<Integer, Integer> location) -> new Rook(APiece.Color.BLACK, location));
-    validPieces.put("WHITE_BISHOP", (Tuple2<Integer, Integer> location) -> new Bishop(APiece.Color.WHITE, location));
-    validPieces.put("BLACK_BISHOP", (Tuple2<Integer, Integer> location) -> new Bishop(APiece.Color.BLACK, location));
-    validPieces.put("WHITE_QUEEN", (Tuple2<Integer, Integer> location) -> new Queen(APiece.Color.WHITE, location));
-    validPieces.put("BLACK_QUEEN", (Tuple2<Integer, Integer> location) -> new Queen(APiece.Color.BLACK, location));
-    validPieces.put("WHITE_KING", (Tuple2<Integer, Integer> location) -> new King(APiece.Color.WHITE, location));
-    validPieces.put("BLACK_KING", (Tuple2<Integer, Integer> location) -> new King(APiece.Color.BLACK, location));
-    validPieces.put("WHITE_PAWN", (Tuple2<Integer, Integer> location) -> new Pawn(APiece.Color.WHITE, location));
-    validPieces.put("BLACK_PAWN", (Tuple2<Integer, Integer> location) -> new Pawn(APiece.Color.BLACK, location));
+    this.m2v = m2v;
+    this.size = size;
   }
 
   /**
-   * Gets the list of black pieces on the board.
-   * @return the black pieces on the board.
+   * Turn getter.
+   * @return whose turn it is.
    */
-  private List<IPiece> getBlackPieces() {
-    return blackPieces;
+  public IPiece.Color getTurn() {
+    return turn;
   }
 
   /**
-   * Gets a list of white pieces on the board.
-   * @return the white pieces on the board.
+   * Tiles getter.
+   * @return the tiles.
    */
-  private List<IPiece> getWhitePieces() {
-    return whitePieces;
+  public Map<Integer, Map<Integer, Tile>> getTiles() {
+    return tiles;
   }
 
   /**
-   * Adds a piece to the board if it is not occupied.
-   * @param piece - the piece to add.
+   * Model 2 view getter.
+   * @return the m2v.
    */
-  public Board addPiece(IPiece piece) {
-
-    int x = piece.getLocation()._1();
-    int y = piece.getLocation()._2();
-
-    board[x][y] = board[x][y].addPiece(piece);
-    return new Board(null, null);
+  public IModel2ViewAdapter getM2v() {
+    return m2v;
   }
 
   /**
-   * Removes a piece from the board.
-   * @param location - The location of the piece.
-   */
-  public Board removePiece(Tuple2<Integer, Integer> location) {
-
-    // TODO: Implement logic.
-//    if (getTile(location).isOccupied()) {
-//      APiece piece = getPiece(location);
-//      if (piece.getColor() == APiece.Color.BLACK) {
-//        blackPieces.remove(piece);
-//      } else {
-//        whitePieces.remove(piece);
-//      }
-//    }
-//
-//    board[location.getX()][location.getY()].setPiece(null);
-////    m2v.removePiece(location);
-    return new Board(null, null);
-  }
-
-  /**
-   * size getter.
+   * Size getter,
    * @return the size of the board.
    */
   public Tuple2<Integer, Integer> getSize() {
@@ -143,212 +90,96 @@ public class Board {
   }
 
   /**
-   * Gets a tile at a specific location.
-   * @param location - The location of the tile.
-   * @return the tile.
-   */
-  public Option<Tile> getTile(Tuple2<Integer, Integer> location) {
-    if (inBounds(location)) {
-      return Option.of(board[location._1()][location._2()]);
-    }
-    return Option.none();
-  }
-
-  /**
-   * Checks if the given location is in the bounds of the board.
-   * @param location - The given location to check.
-   * @return whether or not the location is in the bounds of the board.
-   */
-  public boolean inBounds(Tuple2<Integer, Integer> location) {
-    return location._1() < getSize()._1() && location._2() < getSize()._2()
-               && location._1() >= 0 && location._2() >= 0;
-  }
-
-  /**
-   * Returns a new board with the piece moved.
-   * @param piece - The piece to move.
-   * @param to - The location for the piece to move to.
-   * @return An updated board.
-   */
-  public Board move(IPiece piece, Tuple2<Integer, Integer> to) {
-
-    // TODO: Implement logic.
-
-//    if (turn != piece.getColor()) {
-//      return;
-//    }
-//
-//    // Gets the king and checks if it is in check.
-//    APiece k;
-//    boolean inCheck = false;
-//    if (piece.getColor() == APiece.Color.BLACK) {
-//      for (APiece p : blackPieces) {
-//        if (p instanceof King) {
-//          k = p;
-//          // Checks for check.
-//          for (Tuple location : checked(piece.getColor())) {
-//            if (location.equals(k.getLocation())) {
-//              inCheck = true;
-//              break;
-//            }
-//          }
-//          break;
-//        }
-//      }
-//    }
-//
-//    // Get list of all moves that prevent check.
-//    // If to not in this list return. If no moves in this list then game over.
-//
-//
-//
-//    // Check for castle.
-//    Tuple kingLocation;
-//    // Gets required king location
-//    if (piece.getColor() == APiece.Color.BLACK) {
-//      kingLocation = new Tuple(0, 4);
-//    } else {
-//      kingLocation = new Tuple(7, 4);
-//    }
-//    // Checks for actual castle.
-//    if (piece instanceof Rook
-//            && ((Rook) piece).canCastle(this, kingLocation)) {
-//      boolean isRight;
-//      isRight = piece.getLocation().getY() != 0; // Determines which rook.
-//
-//      APiece king = this.getPiece(kingLocation);
-//
-//      removePiece(piece.getLocation());
-//      removePiece(king.getLocation());
-//      if (isRight) {
-//        m2v.move(piece.toString(), piece.getLocation(), new Tuple(piece.getLocation().getX(), 5));
-//        m2v.move(king.toString(), king.getLocation(), new Tuple(king.getLocation().getX(), 6));
-//        piece.move(piece.getLocation(), new Tuple(piece.getLocation().getX(), 5));
-//        king.move(king.getLocation(), new Tuple(king.getLocation().getX(), 6));
-//      } else {
-//        m2v.move(piece.toString(), piece.getLocation(), new Tuple(piece.getLocation().getX(), 3));
-//        m2v.move(king.toString(), king.getLocation(), new Tuple(king.getLocation().getX(), 2));
-//        piece.move(piece.getLocation(), new Tuple(piece.getLocation().getX(), 3));
-//        king.move(king.getLocation(), new Tuple(king.getLocation().getX(), 2));
-//      }
-//      addPiece(piece);
-//      addPiece(king);
-//
-////      checkMate();
-//
-//      toggleTurn();
-//      return;
-//    }
-//
-//    // Check for capture.
-//    if (getPiece(to) != null && getPiece(to).getColor() != piece.getColor()) {
-//      removePiece(to);
-//      m2v.removePiece(to);
-//    }
-//
-//    // Check for en passant.
-//    if (piece instanceof Pawn
-//            && Math.abs(piece.getLocation().getX() - to.getX()) == 1
-//            && Math.abs(piece.getLocation().getY() - to.getY()) == 1
-//            && getPiece(to) == null
-//            && ((piece.getColor() == APiece.Color.BLACK && piece.getLocation().getX() == 4) || (piece.getColor() == APiece.Color.WHITE && piece.getLocation().getX() == 3))) {
-//      Tuple toRemove = new Tuple(to.getX() - ((Pawn) piece).getForward(), to.getY());
-//      removePiece(toRemove);
-//      m2v.removePiece(toRemove);
-//    }
-//
-//    m2v.move(piece.toString(), piece.getLocation(), to); // updates in view.
-//    removePiece(piece.getLocation());
-//    piece.move(piece.getLocation(), to); // Updates the location of the piece.
-//    addPiece(piece);
-//
-//    // Check for pawn at end of board after move.
-//    if (piece instanceof Pawn) {
-//      if ((piece.getColor() == APiece.Color.BLACK && piece.getLocation().getX() == 7)
-//              || (piece.getColor() == APiece.Color.WHITE && piece.getLocation().getX() == 0)) {
-//        m2v.displayPawnChange(piece.getLocation());
-//      }
-//    }
-//
-////    checkMate();
-//    toggleTurn();
-    return new Board(null, null);
-  }
-
-  public Board changePiece(Tuple2<Integer, Integer> location, String oldName, String newName) {
-
-    // TODO: Implement logic.
-
-//    if (getPiece(location).toString().equals(oldName)) {
-//      if (validPieces.keySet().contains(newName)) {
-//        removePiece(location);
-//        m2v.removePiece(location);
-//        m2v.addPiece(newName, location);
-//        addPiece(validPieces.get(newName).apply(location));
-//      }
-//    }
-    return new Board(null, null);
-  }
-
-  /**
-   * Gets a list of places a king cannot move.
-   * @param color - The color of the king you are checking for.
-   * @return A set of places the king cannot move.
-   */
-  public Set<Tuple2> checked(IPiece.Color color) {
-    List<IPiece> enemyPieces;
-    Set<Tuple2> placesCantMove = HashSet.empty();
-    if (color == IPiece.Color.BLACK) {
-      enemyPieces = getWhitePieces();
-    } else {
-      enemyPieces = getBlackPieces();
-    }
-
-    // TODO: Implement logic.
-
-//    for (IPiece piece : enemyPieces) {
-//      placesCantMove.addAll(piece.getCheckMoves(this));
-//    }
-
-    return placesCantMove;
-  }
-
-  private void toggleTurn() {
-    if (turn == APiece.Color.WHITE) {
-      turn = APiece.Color.BLACK;
-    } else {
-      turn = APiece.Color.WHITE;
-    }
-  }
-
-  /**
-   * True if the current color is in check, false otherwise.
-   * @return whether or not the current color is in check.
-   */
-  private boolean check() {
-    // TODO
-    return false;
-  }
-
-  /**
-   * True if the current color is in check mate, false otherwise.
-   * @return whether or not the current color is in check mate.
-   */
-  private boolean checkMate() {
-    // TODO
-    return false;
-  }
-
-  /**
-   * Gets a piece a specific location.
-   * Returns option none if invalid location or there is no piece.
+   * Gets a piece at a specific location.
    * @param location - The location of the piece.
-   * @return the piece.
+   * @return a piece at the given location.
    */
   public Option<IPiece> getPiece(Tuple2<Integer, Integer> location) {
-    return Match(getTile(location)).of(
-        Case($None(), Option.none()),
-        Case($Some($()), getTile(location).get().getPiece())
-    );
+    if (!inBounds(location)) {
+      return Option.none();
+    }
+    return tiles.get(location._1()).get().get(location._2()).get().getPiece();
+  }
+
+  /**
+   * Gets a list of pieces of a specific color.
+   * @param color - The color of the pieces to get.
+   * @return a list of pieces of a specfic color on the board.
+   */
+  public List<IPiece> getPieces(IPiece.Color color) {
+    List<IPiece> pieces = List.empty();
+    tiles.forEach((k1, v1) -> v1.forEach((k2, v2) -> {
+      Option<IPiece> p = v2.getPiece();
+      if (!p.isEmpty() && p.get().getColor() == color) {
+        pieces.append(p.get());
+      }
+    }));
+    return pieces;
+  }
+
+  /**
+   * Adds a piece to the board.
+   * @param p - the piece to add.
+   * @return a new board with the added piece.
+   */
+  public Board addPiece(IPiece p) {
+      Map<Integer, Map<Integer, Tile>> newTiles = tiles.map((k1, v1) -> new Tuple2<>(k1,
+          v1.map((k2, v2) -> {
+            Tile newTile = v2;
+            if (v2.getLocation().equals(p.getLocation())) {
+              newTile = newTile.addPiece(p);
+            }
+            return new Tuple2<>(k2, newTile);
+          })));
+    return new Board(turn, newTiles, m2v);
+  }
+
+  /**
+   * Removes a piece from the board.
+   * @param location - The location of the piece to remove.
+   * @return a new board with the piece removed.
+   */
+  public Board removePiece(Tuple2<Integer, Integer> location) {
+    Map<Integer, Map<Integer, Tile>> newTiles = tiles.map((k1, v1) -> new Tuple2<>(k1,
+        v1.map((k2, v2) -> {
+          Tile newTile = v2;
+          if (v2.getLocation().equals(location)) {
+            newTile = newTile.removePiece();
+          }
+          return new Tuple2<>(k2, newTile);
+        })));
+    return new Board(turn, newTiles, m2v);
+  }
+
+  /**
+   * Moves a piece from one location to another.
+   * @param from - Where the piece is moving to.
+   * @param to - Where the piece is moving from.
+   * @return a new board with the updated state.
+   */
+  public Board move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
+    // TODO
+    return new Board(null, null, null);
+  }
+
+  /**
+   * Modifies a piece on the board.
+   * @param location - The location of the piece.
+   * @param oldPiece - The old piece.
+   * @param newPiece - The new piece.
+   * @return a new board with the updated piece.
+   */
+  public Board changePiece(Tuple2<Integer, Integer> location, IPiece oldPiece, IPiece newPiece) {
+    // TODO
+    return new Board(null, null, null);
+  }
+
+  /**
+   * Checks that a location is in the board bounds.
+   * @param location - A given location.
+   * @return true if in bounds, false otherwise.
+   */
+  private boolean inBounds(Tuple2<Integer, Integer> location) {
+    return location._1() < size._1() && location._2() < size._2();
   }
 }

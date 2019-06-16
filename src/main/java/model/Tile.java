@@ -61,7 +61,7 @@ public class Tile {
     if (piece.isEmpty() || piece.get().getColor() != p.getColor()) {
       return new Tile(Option.of(p), location);
     }
-    return this;
+    return new Tile(piece, location);
   }
 
   /**

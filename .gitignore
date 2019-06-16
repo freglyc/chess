@@ -28,6 +28,7 @@ local.properties
 .idea/caches
 .idea/checkstyle-idea.xml
 .idea/misc.xml
+.idea/uiDesigner.xml
 
 # Keystore files
 # Uncomment the following lines if you do not want to check your keystore files in.
