@@ -106,18 +106,18 @@ public class Board extends JPanel implements MouseListener {
   private void readResources() {
     try {
       // Read in images.
-      Images.put("BLACK_PAWN", ImageIO.read(new File("src/resources/bpawn.png")));
-      Images.put("WHITE_PAWN", ImageIO.read(new File("src/resources/wpawn.png")));
-      Images.put("BLACK_ROOK", ImageIO.read(new File("src/resources/brook.png")));
-      Images.put("WHITE_ROOK", ImageIO.read(new File("src/resources/wrook.png")));
-      Images.put("BLACK_KNIGHT", ImageIO.read(new File("src/resources/bknight.png")));
-      Images.put("WHITE_KNIGHT", ImageIO.read(new File("src/resources/wknight.png")));
-      Images.put("BLACK_BISHOP", ImageIO.read(new File("src/resources/bbishop.png")));
-      Images.put("WHITE_BISHOP", ImageIO.read(new File("src/resources/wbishop.png")));
-      Images.put("BLACK_QUEEN", ImageIO.read(new File("src/resources/bqueen.png")));
-      Images.put("WHITE_QUEEN", ImageIO.read(new File("src/resources/wqueen.png")));
-      Images.put("BLACK_KING", ImageIO.read(new File("src/resources/bking.png")));
-      Images.put("WHITE_KING", ImageIO.read(new File("src/resources/wking.png")));
+      Images.put("BLACK_PAWN", ImageIO.read(new File("src/main/resources/bpawn.png")));
+      Images.put("WHITE_PAWN", ImageIO.read(new File("src/main/resources/wpawn.png")));
+      Images.put("BLACK_ROOK", ImageIO.read(new File("src/main/resources/brook.png")));
+      Images.put("WHITE_ROOK", ImageIO.read(new File("src/main/resources/wrook.png")));
+      Images.put("BLACK_KNIGHT", ImageIO.read(new File("src/main/resources/bknight.png")));
+      Images.put("WHITE_KNIGHT", ImageIO.read(new File("src/main/resources/wknight.png")));
+      Images.put("BLACK_BISHOP", ImageIO.read(new File("src/main/resources/bbishop.png")));
+      Images.put("WHITE_BISHOP", ImageIO.read(new File("src/main/resources/wbishop.png")));
+      Images.put("BLACK_QUEEN", ImageIO.read(new File("src/main/resources/bqueen.png")));
+      Images.put("WHITE_QUEEN", ImageIO.read(new File("src/main/resources/wqueen.png")));
+      Images.put("BLACK_KING", ImageIO.read(new File("src/main/resources/bking.png")));
+      Images.put("WHITE_KING", ImageIO.read(new File("src/main/resources/wking.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }

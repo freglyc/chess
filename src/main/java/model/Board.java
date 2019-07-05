@@ -91,6 +91,18 @@ public class Board {
   }
 
   /**
+   * Gets a tile at a specific location
+   * @param location - The location of the tile.
+   * @return a tile at the given location.
+   */
+  public Option<Tile> getTile(Tuple2<Integer, Integer> location) {
+    if (!inBounds(location)) {
+      return Option.none();
+    }
+    return tiles.get(location._1()).get().get(location._2());
+  }
+
+  /**
    * Gets a piece at a specific location.
    * @param location - The location of the piece.
    * @return a piece at the given location.
@@ -99,7 +111,7 @@ public class Board {
     if (!inBounds(location)) {
       return Option.none();
     }
-    return tiles.get(location._1()).get().get(location._2()).get().getPiece();
+    return getTile(location).get().getPiece();
   }
 
   /**
@@ -189,7 +201,7 @@ public class Board {
    * @param location - A given location.
    * @return true if in bounds, false otherwise.
    */
-  private boolean inBounds(Tuple2<Integer, Integer> location) {
+  public boolean inBounds(Tuple2<Integer, Integer> location) {
     return location._1() < size._1() && location._2() < size._2();
   }
 }

@@ -62,13 +62,13 @@ public class Tile extends JPanel {
    */
   void addPiece(Piece piece) {
     if (this.piece == null && piece != null) {
-      System.out.println("PIECE ADDED TO TILE");
+//      System.out.println("PIECE ADDED TO TILE");
       this.piece = piece;
 
       this.add(piece);
-      if (this.getComponent(0).equals(piece)) {
-        System.out.println("ADDED SUCCESSFULLY");
-      }
+//      if (this.getComponent(0).equals(piece)) {
+//        System.out.println("ADDED SUCCESSFULLY");
+//      }
 
       piece.setVisible(true);
       piece.repaint();
