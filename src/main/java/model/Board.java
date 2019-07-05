@@ -98,8 +98,7 @@ public class Board {
    * @return a tile at the given location.
    */
   public Option<Tile> getTile(Tuple2<Integer, Integer> location) {
-    if (!inBounds(location)) return Option.none();
-    return tiles.get(location._1()).get().get(location._2());
+    return tiles.get(location._1()).fold(Option::none, row -> row.get(location._2()));
   }
 
   /**
@@ -108,8 +107,7 @@ public class Board {
    * @return a piece at the given location.
    */
   public Option<IPiece> getPiece(Tuple2<Integer, Integer> location) {
-    if (!inBounds(location)) return Option.none();
-    return getTile(location).get().getPiece();
+    return getTile(location).fold(Option::none, Tile::getPiece);
   }
 
   /**
@@ -119,10 +117,13 @@ public class Board {
    */
   public List<IPiece> getPieces(IPiece.Color color) {
     List<IPiece> pieces = List.empty();
-    tiles.forEach((k1, v1) -> v1.forEach((k2, v2) -> {
-      Option<IPiece> piece = v2.getPiece();
-      if (piece.fold(() -> false, p -> p.getColor() == color)) pieces.append(piece.get());
-    }));
+    for (Tuple2<Integer, Map<Integer, Tile>> row : tiles) {
+      for (Tuple2<Integer, Tile> col : row._2()) {
+        if (col._2().getPiece().fold(() -> false, p -> p.getColor().equals(color))) {
+          pieces = pieces.append(col._2().getPiece().get());
+        }
+      }
+    }
     return pieces;
   }
 

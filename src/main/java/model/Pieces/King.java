@@ -34,6 +34,12 @@ public class King extends APiece {
     // Base check.
     if (!board.inBounds(getLocation()) && board.getPiece(getLocation()).fold(()-> false, p -> p.equals(this))) return List.empty();
 
+    List<Tuple2<Integer, Integer>> invalidMoves = board.getPieces(getColor().equals(Color.WHITE) ? Color.BLACK : Color.WHITE).flatMap(p -> p.getCheckMoves(board));
+    return getCheckMoves(board).filter(move -> !invalidMoves.contains(move));
+  }
+
+  @Override
+  public List<Tuple2<Integer, Integer>> getCheckMoves(Board board) {
     int xLoc = getLocation()._1();
     int yLoc = getLocation()._2();
     List<Tuple2<Integer, Integer>> potentialValid = List.of(
@@ -45,8 +51,8 @@ public class King extends APiece {
         new Tuple2<>(xLoc, yLoc - 1),
         new Tuple2<>(xLoc + 1, yLoc - 1),
         new Tuple2<>(xLoc - 1, yLoc + 1));
-    List<Tuple2<Integer, Integer>> invalidMoves = board.getPieces(getColor().equals(Color.WHITE) ? Color.BLACK : Color.WHITE).flatMap(p -> p.getValidMoves(board));
-    return potentialValid.filter(board::inBounds).filter(move -> !invalidMoves.contains(move)).filter(move -> board.getPiece(move).fold(() -> true, p -> !p.getColor().equals(getColor())));
+
+    return potentialValid.filter(board::inBounds).filter(move -> board.getPiece(move).fold(() -> true, p -> !p.getColor().equals(getColor())));
   }
 
   @Override

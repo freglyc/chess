@@ -37,6 +37,11 @@ public class Bishop extends APiece {
   }
 
   @Override
+  public List<Tuple2<Integer, Integer>> getCheckMoves(Board board) {
+    return getValidMoves(board);
+  }
+
+  @Override
   public String toString() {
     return this.getColor() + "_BISHOP";
   }

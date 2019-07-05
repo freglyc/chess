@@ -14,8 +14,6 @@ public class Pawn extends APiece {
 
   private int forward;
 
-  private boolean canPassant;
-
   /**
    * Pawn Constructor.
    * @param color - The color of the piece. Either BLACK or WHITE.
@@ -24,7 +22,6 @@ public class Pawn extends APiece {
   public Pawn(Color color, Tuple2<Integer, Integer> loc, int timesMoved) {
     super(color, loc, timesMoved);
     forward = this.getColor() == Color.BLACK ? 1 : -1;
-    canPassant = false;
   }
 
   public Pawn(Color color, Tuple2<Integer, Integer> loc) {
@@ -72,6 +69,13 @@ public class Pawn extends APiece {
     if (!canPassant(board).isEmpty()) valid = valid.appendAll(canPassant(board).get());
 
     return valid;
+  }
+
+  @Override
+  public List<Tuple2<Integer, Integer>> getCheckMoves(Board board) {
+    int xLoc = getLocation()._1(); // The x location of the piece.
+    int yLoc = getLocation()._2(); // The y location of the piece.
+    return List.of(new Tuple2<>(xLoc + forward, yLoc + 1), new Tuple2<>(xLoc + forward, yLoc - 1));
   }
 
   public Option<List<Tuple2<Integer, Integer>>> canPassant(Board board) {
