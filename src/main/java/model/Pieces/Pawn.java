@@ -4,6 +4,7 @@ import model.Board;
 
 import io.vavr.collection.List;
 import io.vavr.Tuple2;
+import model.Tile;
 
 /**
  * Pawn piece.
@@ -19,11 +20,7 @@ public class Pawn extends APiece {
    */
   public Pawn(Color color, Tuple2<Integer, Integer> loc, int timesMoved) {
     super(color, loc, timesMoved);
-    if (this.getColor() == Color.BLACK) {
-      forward = 1;
-    } else {
-      forward = -1;
-    }
+    forward = this.getColor() == Color.BLACK ? 1 : -1;
   }
 
   public Pawn(Color color, Tuple2<Integer, Integer> loc) {
@@ -37,81 +34,59 @@ public class Pawn extends APiece {
 
   @Override
   public List<Tuple2<Integer, Integer>> getValidMoves(Board board) {
+
+    // Base check.
+    if (!board.inBounds(getLocation()) && board.getPiece(getLocation()).fold(()-> false, p -> p.equals(this))) return List.empty();
+
     int xLoc = getLocation()._1(); // The x location of the piece.
     int yLoc = getLocation()._2(); // The y location of the piece.
     List<Tuple2<Integer, Integer>> valid = List.empty();
 
-    // TODO: implement logic.
+    // Checks for standard forward move.
+    Tuple2<Integer, Integer> forwardMove1 = new Tuple2<>(xLoc + forward, yLoc);
+    if (board.inBounds(forwardMove1) && !board.getTile(forwardMove1).fold(() -> false, Tile::isOccupied))
+      valid = valid.append(forwardMove1);
 
-//    // Initial check to ensure the piece is in the bounds of the board. Checks to ensure it's the same piece.
-//    if (board.inBounds(getLocation()) && this.equals(board.getPiece(getLocation()))) {
-//      // Checks if the forward move is valid.
-//      Tuple forwardMove = new Tuple(xLoc + forward, yLoc);
-//      if (board.inBounds(forwardMove) && !board.getTile(forwardMove).isOccupied()) {
-//        valid.add(forwardMove);
-//      }
-//
-//      // Checks for the two move case if the pawn has not been moved.
-//      Tuple forwardMove2Spaces = new Tuple(xLoc + (forward*2), yLoc);
-//      if (board.inBounds(forwardMove2Spaces)
-//              && getNumberTimeMoved() == 0
-//              && !board.getTile(forwardMove2Spaces).isOccupied()
-//              && !board.getTile(new Tuple(forwardMove2Spaces.getX() - forward, yLoc)).isOccupied()) {
-//        valid.add(forwardMove2Spaces);
-//      }
-//
-//      // Check for en pessant. .
-//      if ((getColor() == Color.BLACK && xLoc == 4) || (getColor() == Color.WHITE && xLoc == 3)) {
-//        Tuple enPassant1 = new Tuple(xLoc + forward, yLoc + 1);
-//        Tuple otherLocation1 = new Tuple(xLoc, yLoc + 1);
-//        System.out.println("HERE 1");
-//        if (board.getTile(otherLocation1).isOccupied()
-//                && board.getPiece(otherLocation1) instanceof Pawn
-//                && board.getPiece(otherLocation1).getNumberTimeMoved() == 1
-//                && board.getPiece(otherLocation1).getColor() != getColor()) {
-//          valid.add(enPassant1);
-//        }
-//
-//        Tuple enPassant2 = new Tuple(xLoc + forward, yLoc - 1);
-//        Tuple otherLocation2 = new Tuple(xLoc, yLoc - 1);
-//        if (board.getTile(otherLocation2).isOccupied()
-//                && board.getPiece(otherLocation2) instanceof Pawn
-//                && board.getPiece(otherLocation2).getNumberTimeMoved() == 1
-//                && board.getPiece(otherLocation2).getColor() != getColor()) {
-//          valid.add(enPassant2);
-//        }
-//      }
-//
-//      // Checks the two diagonal moves.
-//      Tuple forwardDiagMove1 = new Tuple(xLoc + forward, yLoc + 1);
-//      if (board.inBounds(forwardDiagMove1) && board.getTile(forwardDiagMove1).isOccupied() && board.getPiece(forwardDiagMove1).getColor() != this.getColor()) {
-//        valid.add(forwardDiagMove1);
-//      }
-//      Tuple forwardDiagMove2 = new Tuple(xLoc + forward, yLoc - 1);
-//      if (board.inBounds(forwardDiagMove2) && board.getTile(forwardDiagMove2).isOccupied() && board.getPiece(forwardDiagMove2).getColor() != this.getColor()) {
-//        valid.add(forwardDiagMove2);
-//      }
-//    }
+    // Checks for first time two moves forward.
+    Tuple2<Integer, Integer> forwardMove2 = new Tuple2<>(xLoc + (forward * 2), yLoc);
+    if (getTimesMoved() == 0 && board.inBounds(forwardMove1) && board.inBounds(forwardMove2) &&
+            !board.getTile(forwardMove1).fold(() -> false, Tile::isOccupied) &&
+            !board.getTile(forwardMove2).fold(() -> false, Tile::isOccupied))
+      valid = valid.append(forwardMove2);
 
+    // Checks for take.
+    Tuple2<Integer, Integer> take1 = new Tuple2<>(xLoc + forward, yLoc + 1);
+    Tuple2<Integer, Integer> take2 = new Tuple2<>(xLoc + forward, yLoc - 1);
+    if (board.inBounds(take1) && board.getTile(take1).fold(() -> false, Tile::isOccupied) &&
+            board.getPiece(take1).fold(() -> false, p -> !p.getColor().equals(getColor())))
+      valid = valid.append(take1);
+    if (board.inBounds(take2) && board.getTile(take2).fold(() -> false, Tile::isOccupied) &&
+            board.getPiece(take2).fold(() -> false, p -> !p.getColor().equals(getColor())))
+      valid = valid.append(take2);
+
+    // Checks for en pessant.
+    if ((getColor() == Color.BLACK && xLoc == 4) || (getColor() == Color.WHITE && xLoc == 3)) {
+      Tuple2<Integer, Integer> pessant1 = new Tuple2<>(xLoc + forward, yLoc + 1);
+      Tuple2<Integer, Integer> toCheck1 = new Tuple2<>(xLoc, yLoc + 1);
+      Tuple2<Integer, Integer> pessant2 = new Tuple2<>(xLoc + forward, yLoc - 1);
+      Tuple2<Integer, Integer> toCheck2 = new Tuple2<>(xLoc, yLoc - 1);
+      if (board.inBounds(pessant1) && board.inBounds(toCheck1) &&
+              board.getTile(toCheck1).fold(() -> false, Tile::isOccupied) &&
+              board.getTile(pessant1).fold(() -> false, t -> !t.isOccupied()) &&
+              board.getPiece(toCheck1).fold(() -> false, p -> p instanceof Pawn && !p.getColor().equals(getColor())) &&
+              this.getTimesMoved() == 1)
+        valid = valid.append(pessant1);
+      if (board.inBounds(pessant2) && board.inBounds(toCheck2) &&
+              board.getTile(toCheck2).fold(() -> false, Tile::isOccupied) &&
+              board.getTile(pessant2).fold(() -> false, t -> !t.isOccupied()) &&
+              board.getPiece(toCheck2).fold(() -> false, p -> p instanceof Pawn && !p.getColor().equals(getColor())) &&
+              this.getTimesMoved() == 1)
+        valid = valid.append(pessant1);
+    }
     return valid;
   }
 
-//  @Override
-//  public List<Tuple> getCheckMoves(Board board) {
-//    List<Tuple> valid = new ArrayList<>();
-//    int xLoc = getLocation().getX(); // The x location of the piece.
-//    int yLoc = getLocation().getY(); // The y location of the piece.
-//    System.out.println(forward);
-//    valid.add(new Tuple(xLoc + forward, yLoc + 1));
-//    valid.add(new Tuple(xLoc + forward, yLoc - 1));
-//
-//    System.out.println("PAWN: " + valid.get(0).toString());
-//    System.out.println("PAWN: " + valid.get(1).toString());
-//
-//    return valid;
-//  }
-
-  public int getForward() {
+  private int getForward() {
     return forward;
   }
 

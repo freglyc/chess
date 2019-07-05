@@ -30,6 +30,9 @@ public class Knight extends APiece {
 
   @Override
   public List<Tuple2<Integer, Integer>> getValidMoves(Board board) {
+    // Base check.
+    if (!board.inBounds(getLocation()) && board.getPiece(getLocation()).fold(()-> false, p -> p.equals(this))) return List.empty();
+
     int xLoc = this.getLocation()._1();
     int yLoc = this.getLocation()._2();
     List<Tuple2<Integer, Integer>> potentialValid = List.of(

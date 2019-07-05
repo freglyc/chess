@@ -95,7 +95,7 @@ public class Model {
    * @param to - Where the piece is moving to.
    */
   public void move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
-    board = board.move(from, to);
+    board = board.moveLogic(from, to);
   }
 
   /**

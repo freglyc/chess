@@ -96,9 +96,7 @@ public class Board {
    * @return a tile at the given location.
    */
   public Option<Tile> getTile(Tuple2<Integer, Integer> location) {
-    if (!inBounds(location)) {
-      return Option.none();
-    }
+    if (!inBounds(location)) return Option.none();
     return tiles.get(location._1()).get().get(location._2());
   }
 
@@ -108,9 +106,7 @@ public class Board {
    * @return a piece at the given location.
    */
   public Option<IPiece> getPiece(Tuple2<Integer, Integer> location) {
-    if (!inBounds(location)) {
-      return Option.none();
-    }
+    if (!inBounds(location)) return Option.none();
     return getTile(location).get().getPiece();
   }
 
@@ -122,10 +118,8 @@ public class Board {
   public List<IPiece> getPieces(IPiece.Color color) {
     List<IPiece> pieces = List.empty();
     tiles.forEach((k1, v1) -> v1.forEach((k2, v2) -> {
-      Option<IPiece> p = v2.getPiece();
-      if (!p.isEmpty() && p.get().getColor() == color) {
-        pieces.append(p.get());
-      }
+      Option<IPiece> piece = v2.getPiece();
+      if (piece.fold(() -> false, p -> p.getColor() == color)) pieces.append(piece.get());
     }));
     return pieces;
   }
@@ -140,9 +134,7 @@ public class Board {
         x -> new Board(turn, tiles.map((k1, v1) -> new Tuple2<>(k1,
             v1.map((k2, v2) -> {
               Tile newTile = v2;
-              if (v2.getLocation().equals(p.get().getLocation())) {
-                newTile = newTile.addPiece(p.get());
-              }
+              if (v2.getLocation().equals(p.get().getLocation())) newTile = newTile.addPiece(p.get());
               return new Tuple2<>(k2, newTile);
         }))), m2v));
   }
@@ -156,21 +148,42 @@ public class Board {
     return new Board(turn, tiles.map((k1, v1) -> new Tuple2<>(k1,
         v1.map((k2, v2) -> {
           Tile newTile = v2;
-          if (v2.getLocation().equals(location)) {
-            newTile = newTile.removePiece();
-          }
+          if (v2.getLocation().equals(location)) newTile = newTile.removePiece();
           return new Tuple2<>(k2, newTile);
         }))), m2v);
   }
 
   /**
    * Moves a piece from one location to another.
-   * @param from - Where the piece is moving to.
-   * @param to - Where the piece is moving from.
+   * @param from - Where the piece is moving from.
+   * @param to - Where the piece is moving to.
    * @return a new board with the updated state.
    */
-  public Board move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
+  private Board move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
     return this.getPiece(from).fold(() -> this, p -> this.addPiece(Option.of(p.move(to))));
+  }
+
+  /**
+   * Moves a piece while checking chess logic. i.e. castle, en pessant, etc.
+   * @param from - Where the piece is moving from.
+   * @param to - Where the piece is moving to.
+   * @return a new board with the updated state.
+   */
+  Board moveLogic(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
+    // Check king mated.
+
+    // Check draw.
+
+    // Check king in check.
+
+    // Check castle.
+
+    // Check en pessant.
+
+    // Check pawn at end of board.
+
+    toggleTurn();
+    return move(from, to);
   }
 
   /**
@@ -189,11 +202,7 @@ public class Board {
    * @return a new board with the updated turn.
    */
   public Board toggleTurn() {
-    if (turn == IPiece.Color.WHITE) {
-      return new Board(IPiece.Color.BLACK, tiles, m2v);
-    } else {
-      return new Board(IPiece.Color.WHITE, tiles, m2v);
-    }
+    return turn == IPiece.Color.WHITE ? new Board(IPiece.Color.BLACK, tiles, m2v) : new Board(IPiece.Color.WHITE, tiles, m2v);
   }
 
   /**

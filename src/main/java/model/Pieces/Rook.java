@@ -30,6 +30,9 @@ public class Rook extends APiece {
 
   @Override
   public List<Tuple2<Integer, Integer>> getValidMoves(Board board) {
+    // Base check.
+    if (!board.inBounds(getLocation()) && board.getPiece(getLocation()).fold(()-> false, p -> p.equals(this))) return List.empty();
+
     List<Tuple2<Integer, Integer>> valid = getStraightMoves(board);
 
     // TODO: implement logic.
