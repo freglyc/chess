@@ -33,7 +33,6 @@ public class King extends APiece {
   public List<Tuple2<Integer, Integer>> getValidMoves(Board board) {
     int xLoc = getLocation()._1();
     int yLoc = getLocation()._2();
-    List<Tuple2<Integer, Integer>> valid = List.empty();
     List<Tuple2<Integer, Integer>> potentialValid = List.of(
         new Tuple2<>(xLoc + 1, yLoc),
         new Tuple2<>(xLoc + 1, yLoc + 1),
@@ -43,41 +42,9 @@ public class King extends APiece {
         new Tuple2<>(xLoc, yLoc - 1),
         new Tuple2<>(xLoc + 1, yLoc - 1),
         new Tuple2<>(xLoc - 1, yLoc + 1));
-
-    // TODO: implement logic.
-
-
-//    Set<Tuple2<Integer, Integer>> placesCantMove = board.checked(this.getColor());
-//    main:
-//    for (Tuple loc : potentialValid) {
-//      for (Tuple cantMove : placesCantMove) {
-//        if (cantMove.equals(loc)) {
-//          continue main;
-//        }
-//      }
-//
-//      if (this.getValidMove(board, loc)) {
-//        valid.add(loc);
-//      }
-//    }
-    return valid;
+    List<Tuple2<Integer, Integer>> invalidMoves = board.getPieces(getColor().equals(Color.WHITE) ? Color.BLACK : Color.WHITE).flatMap(p -> p.getValidMoves(board));
+    return potentialValid.filter(board::inBounds).filter(move -> !invalidMoves.contains(move));
   }
-
-//  @Override
-//  public Set<Tuple2<Integer, Integer>> getCheckMoves(Board board) {
-//    List<Tuple> check = new ArrayList<>();
-//    int xLoc = this.getLocation().getX();
-//    int yLoc = this.getLocation().getY();
-//    check.add(new Tuple(xLoc + 1, yLoc));
-//    check.add(new Tuple(xLoc + 1, yLoc + 1));
-//    check.add(new Tuple(xLoc, yLoc + 1));
-//    check.add(new Tuple(xLoc - 1, yLoc));
-//    check.add(new Tuple(xLoc - 1, yLoc - 1));
-//    check.add(new Tuple(xLoc, yLoc - 1));
-//    check.add(new Tuple(xLoc + 1, yLoc - 1));
-//    check.add(new Tuple(xLoc - 1, yLoc + 1));
-//    return check;
-//  }
 
   @Override
   public String toString() {
