@@ -1,6 +1,7 @@
 package model;
 
 import io.vavr.Tuple2;
+import model.Pieces.IPiece;
 
 /**
  * Model to view adapter.
@@ -28,8 +29,8 @@ public interface IModel2ViewAdapter {
   void removePiece(Tuple2<Integer, Integer> location);
 
   /**
-   * Displays popup where you can upgrade pawns.
+   * Displays popup where you can promote pawns.
    * @param location - The location of the pawn to upgrade.
    */
-  void displayPawnChange(Tuple2<Integer, Integer> location);
+  void displayPawnPromotion(Tuple2<Integer, Integer> location, IPiece.Color color);
 }

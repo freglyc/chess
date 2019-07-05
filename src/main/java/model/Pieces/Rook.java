@@ -1,9 +1,12 @@
 package model.Pieces;
 
+import io.vavr.Tuple;
+import io.vavr.control.Option;
 import model.Board;
 
 import io.vavr.collection.List;
 import io.vavr.Tuple2;
+import model.Tile;
 
 /**
  * Rook piece.
@@ -34,80 +37,29 @@ public class Rook extends APiece {
     if (!board.inBounds(getLocation()) && board.getPiece(getLocation()).fold(()-> false, p -> p.equals(this))) return List.empty();
 
     List<Tuple2<Integer, Integer>> valid = getStraightMoves(board);
-
-    // TODO: implement logic.
-
-//    //Check for potential castle.
-//    int row;
-//    if (this.getColor() == Color.BLACK) {
-//      row = 0;
-//    } else {
-//      row = 7;
-//    }
-//    Tuple kingLocation = new Tuple(row, 4);
-//    if (canCastle(board, kingLocation)) {
-//      valid.add(kingLocation);
-//    }
-
+    canCastle(board, getLocation()).fold(() -> null, valid::append);
     return valid;
   }
 
-//  public boolean canCastle(Board board, Tuple kingLocation) {
-//
-//    boolean valid = false;
-//
-//    if (this.getNumberTimeMoved() == 0
-//            && board.getTile(kingLocation).isOccupied()
-//            && board.getPiece(kingLocation) instanceof King) {
-//      APiece king = board.getPiece(kingLocation); // Gets the piece.
-//      if (king.getNumberTimeMoved() == 0
-//              && king.getColor() == getColor()) {
-//
-//        // Gets the spaces between the king and rook.
-//        int numSpaces = Math.abs(kingLocation.getY() - this.getLocation().getY()) - 1;
-//        List<Tuple> spaces = new ArrayList<>();
-//        for (int i = 0; i < numSpaces; i++) {
-//          if (numSpaces == 2) {
-//            spaces.add(new Tuple(kingLocation.getX(), kingLocation.getY() + i + 1));
-//          } else {
-//            spaces.add(new Tuple(kingLocation.getX(), kingLocation.getY() - i - 1));
-//          }
-//        }
-//
-//        // Checks to ensure spaces in between are valid
-//        Set<Tuple> check = board.checked(this.getColor()); // Set of locations the king cannot move.
-//        int count = 0;
-//        // Checks each necessary space to ensure they are not in a check position.
-//        // Checks to ensure all spaces are in between are not occupied.
-//        // Checks to ensure the king is not in check.
-//        top:
-//        for (Tuple space : spaces) {
-//          if (board.getTile(space).isOccupied() && count < 2) {
-//            valid = false;
-//            break;
-//          }
-//          for (Tuple loc : check) {
-//            if (loc.equals(space) && count < 2) {
-//              valid = false;
-//              break top;
-//            }
-//            if (loc.equals(kingLocation)) {
-//              valid = false;
-//              break top;
-//            }
-//          }
-//          count ++;
-//          valid = true;
-//        }
-//      }
-//    }
-//    return valid;
-//  }
+  /**
+   * Determines whether a rook can castle.
+   * @param board - The board the rook lies on.
+   * @param location - The location of the rook.
+   * @return an optional location of the castle move (the king location).
+   */
+  public Option<Tuple2<Integer, Integer>> canCastle(Board board, Tuple2<Integer, Integer> location) {
 
-//  @Override
-//  public List<Tuple> getCheckMoves(Board board) {
-//    return getValidStraightMoves(board, true);
-//  }
+    int row = this.getColor() == Color.BLACK ? 0 : 7;
+    Tuple2<Integer, Integer> kingLoc = new Tuple2<>(row, 4);
+
+    if (this.getTimesMoved() == 0 && board.getPiece(kingLoc).fold(() -> false,
+        p -> p instanceof King && p.getTimesMoved() == 0 && p.getColor().equals(getColor()))) {
+      if (location.equals(kingLoc)) return Option.of(kingLoc);
+      else if (board.getTile(location).fold(() -> false, Tile::isOccupied)) return Option.none();
+      else return canCastle(board, new Tuple2<>(row, kingLoc._2() > location._2() ? location._2() + 1 : location._2() - 1));
+    }
+    return Option.none();
+  }
 
   @Override
   public String toString() {

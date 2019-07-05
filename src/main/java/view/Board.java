@@ -156,21 +156,12 @@ public class Board extends JPanel implements MouseListener {
       repaint();
   }
 
-//  /**
-//   * Moves a piece from its current location to a new location in the model.
-//   * @param piece - The piece being moved.
-//   * @param to - The location being moved to.
-//   */
-//  private void move(Piece piece, Tuple to) {
-//    // Moves in the model.
-//
-//
-//    // Moves in the view.
-////    removePiece(piece.getPieceLocation()); // removes the piece from it's location.
-////    piece.move(to); // updates the piece's location.
-////    addPiece(piece); // adds the piece back in a different location.
-//  }
-
+  /**
+   * Moves a piece in the view.
+   * @param name - The name of the piece.
+   * @param from - Where the piece is moving from.
+   * @param to - Where the piece is moving to.
+   */
   public void move(String name, Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
     if (board[from._1()][from._2()].getPiece().getName().equals(name)) {
       Piece piece = board[from._1()][from._2()].getPiece();
@@ -181,7 +172,11 @@ public class Board extends JPanel implements MouseListener {
     }
   }
 
-
+  /**
+   * Gets a piece.
+   * @param location - The location of the piece.
+   * @return string representing the piece.
+   */
   public String getPiece(Tuple2<Integer, Integer> location) {
     return board[location._1()][location._2()].getPiece().getName();
   }
@@ -204,8 +199,7 @@ public class Board extends JPanel implements MouseListener {
       repaint();
     } else if (valid.contains(tile.getTileLocation())) {
       // If a piece is currently selected and a valid location was clicked then move the piece.
-      v2m.move(selectedTile.getPiece().getPieceLocation(), tile.getTileLocation()); // Update model.
-      move(selectedTile.getPiece().getName(),selectedTile.getPiece().getPieceLocation(), tile.getTileLocation()); // Update view.
+      v2m.move(selectedTile.getPiece().getPieceLocation(), tile.getTileLocation()); // Update model and view.
       // Updates the valid tiles.
       for (Tuple2<Integer, Integer> loc : valid) {
         board[loc._1()][loc._2()].toggleSelected();

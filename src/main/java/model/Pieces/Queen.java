@@ -36,17 +36,8 @@ public class Queen extends APiece {
     List<Tuple2<Integer, Integer>> valid = List.empty();
     valid = valid.appendAll(getStraightMoves(board));
     valid = valid.appendAll(getDiagonalMoves(board));
-
     return valid;
   }
-
-//  @Override
-//  public List<Tuple> getCheckMoves(Board board) {
-//    List<Tuple> valid = new ArrayList<>();
-//    valid.addAll(getValidStraightMoves(board, true));
-//    valid.addAll(getValidDiagonalMoves(board, true));
-//    return valid;
-//  }
 
   @Override
   public String toString() {

@@ -23,5 +23,5 @@ public interface IView2ModelAdapter {
    */
   void move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to);
 
-  void changePiece(Tuple2<Integer, Integer> location, String oldPiece, String newPiece);
+  void changePiece(Tuple2<Integer, Integer> location, String newPiece);
 }

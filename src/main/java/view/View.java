@@ -99,50 +99,44 @@ public class View extends JFrame {
     boardPanel.move(name, from, to);
   }
 
-  public void displayPawnChange(Tuple2<Integer, Integer> location) {
-//    final String[] newPiece = new String[1];
-    String oldPiece = boardPanel.getPiece(location);
-    String color = oldPiece.split("_")[0];
-//    System.out.println(color);
-    if (!oldPiece.equals("null")) {
-//      System.out.println("NEW FRAME");
-      JFrame frame = new JFrame();
-      JPanel pnl = new JPanel();
-      JButton queenBtn = new JButton("QUEEN");
-      queenBtn.addActionListener((arg) -> {
-        v2m.changePiece(location, oldPiece, color + "_QUEEN");
-        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-      });
-      JButton bishopBtn = new JButton("BISHOP");
-      bishopBtn.addActionListener((arg) -> {
-        v2m.changePiece(location, oldPiece, color + "_BISHOP");
-        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-      });;
-      JButton knightBtn = new JButton("KNIGHT");
-      knightBtn.addActionListener((arg) -> {
-        v2m.changePiece(location, oldPiece, color + "_KNIGHT");
-        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-      });
-      JButton rookBtn = new JButton("ROOK");
-      rookBtn.addActionListener((arg) -> {
-        v2m.changePiece(location, oldPiece, color + "_ROOK");
-        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-      });
+  /**
+   * Displays pawn change options.
+   * @param location - The location of the piece.
+   * @param color - The color of the pawn.
+   */
+  public void displayPawnPromotion(Tuple2<Integer, Integer> location, String color) {
+    JFrame frame = new JFrame();
+    JPanel pnl = new JPanel();
+    JButton queenBtn = new JButton("QUEEN");
+    queenBtn.addActionListener((arg) -> {
+      v2m.changePiece(location, color + "_QUEEN");
+      frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+    });
+    JButton bishopBtn = new JButton("BISHOP");
+    bishopBtn.addActionListener((arg) -> {
+      v2m.changePiece(location, color + "_BISHOP");
+      frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+    });;
+    JButton knightBtn = new JButton("KNIGHT");
+    knightBtn.addActionListener((arg) -> {
+      v2m.changePiece(location, color + "_KNIGHT");
+      frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+    });
+    JButton rookBtn = new JButton("ROOK");
+    rookBtn.addActionListener((arg) -> {
+      v2m.changePiece(location, color + "_ROOK");
+      frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+    });
 
-      pnl.add(queenBtn);
-      pnl.add(bishopBtn);
-      pnl.add(knightBtn);
-      pnl.add(rookBtn);
-      frame.setContentPane(pnl);
-      frame.setLayout(new GridLayout());
-      frame.setTitle("Choose Piece");
-      frame.setVisible(true);
-      frame.setSize(300, 100);
-//      frame.set
-//      System.out.println(newPiece[0]);
-//      v2m.changePiece(location, oldPiece, newPiece[0]);
-    }
-
+    pnl.add(queenBtn);
+    pnl.add(bishopBtn);
+    pnl.add(knightBtn);
+    pnl.add(rookBtn);
+    frame.setContentPane(pnl);
+    frame.setLayout(new GridLayout());
+    frame.setTitle("Choose Piece");
+    frame.setVisible(true);
+    frame.setSize(300, 100);
   }
 
   /**

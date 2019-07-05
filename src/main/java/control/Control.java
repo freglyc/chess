@@ -2,8 +2,10 @@ package control;
 
 import io.vavr.Tuple2;
 import io.vavr.collection.List;
+import model.Board;
 import model.IModel2ViewAdapter;
 import model.Model;
+import model.Pieces.IPiece;
 import model.Pieces.Pieces;
 import view.IView2ModelAdapter;
 import view.View;
@@ -47,8 +49,8 @@ public class Control {
       }
 
       @Override
-      public void displayPawnChange(Tuple2<Integer, Integer> location) {
-        view.displayPawnChange(location);
+      public void displayPawnPromotion(Tuple2<Integer, Integer> location, IPiece.Color color) {
+        view.displayPawnPromotion(location, color.equals(IPiece.Color.WHITE) ? "WHITE" : "BLACK");
       }
     });
 
@@ -65,8 +67,8 @@ public class Control {
       }
 
       @Override
-      public void changePiece(Tuple2<Integer, Integer> location, String oldPiece, String newPiece) {
-        model.changePiece(location, model.getPiece(location), Pieces.getInstance().createPiece(newPiece, location));
+      public void changePiece(Tuple2<Integer, Integer> location, String newPiece) {
+        model.changePiece(location, Pieces.getInstance().createPiece(newPiece, location));
       }
     });
   }

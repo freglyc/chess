@@ -1,5 +1,6 @@
 package model.Pieces;
 
+import io.vavr.control.Option;
 import model.Board;
 
 import io.vavr.collection.List;
@@ -13,6 +14,8 @@ public class Pawn extends APiece {
 
   private int forward;
 
+  private boolean canPassant;
+
   /**
    * Pawn Constructor.
    * @param color - The color of the piece. Either BLACK or WHITE.
@@ -21,6 +24,7 @@ public class Pawn extends APiece {
   public Pawn(Color color, Tuple2<Integer, Integer> loc, int timesMoved) {
     super(color, loc, timesMoved);
     forward = this.getColor() == Color.BLACK ? 1 : -1;
+    canPassant = false;
   }
 
   public Pawn(Color color, Tuple2<Integer, Integer> loc) {
@@ -64,26 +68,40 @@ public class Pawn extends APiece {
             board.getPiece(take2).fold(() -> false, p -> !p.getColor().equals(getColor())))
       valid = valid.append(take2);
 
-    // Checks for en pessant.
-    if ((getColor() == Color.BLACK && xLoc == 4) || (getColor() == Color.WHITE && xLoc == 3)) {
-      Tuple2<Integer, Integer> pessant1 = new Tuple2<>(xLoc + forward, yLoc + 1);
-      Tuple2<Integer, Integer> toCheck1 = new Tuple2<>(xLoc, yLoc + 1);
-      Tuple2<Integer, Integer> pessant2 = new Tuple2<>(xLoc + forward, yLoc - 1);
-      Tuple2<Integer, Integer> toCheck2 = new Tuple2<>(xLoc, yLoc - 1);
-      if (board.inBounds(pessant1) && board.inBounds(toCheck1) &&
-              board.getTile(toCheck1).fold(() -> false, Tile::isOccupied) &&
-              board.getTile(pessant1).fold(() -> false, t -> !t.isOccupied()) &&
-              board.getPiece(toCheck1).fold(() -> false, p -> p instanceof Pawn && !p.getColor().equals(getColor())) &&
-              this.getTimesMoved() == 1)
-        valid = valid.append(pessant1);
-      if (board.inBounds(pessant2) && board.inBounds(toCheck2) &&
-              board.getTile(toCheck2).fold(() -> false, Tile::isOccupied) &&
-              board.getTile(pessant2).fold(() -> false, t -> !t.isOccupied()) &&
-              board.getPiece(toCheck2).fold(() -> false, p -> p instanceof Pawn && !p.getColor().equals(getColor())) &&
-              this.getTimesMoved() == 1)
-        valid = valid.append(pessant1);
-    }
+    // Checks for en passant.
+    if (!canPassant(board).isEmpty()) valid = valid.appendAll(canPassant(board).get());
+
     return valid;
+  }
+
+  public Option<List<Tuple2<Integer, Integer>>> canPassant(Board board) {
+
+    List<Tuple2<Integer, Integer>> passant = List.empty();
+
+    int xLoc = getLocation()._1(); // The x location of the piece.
+    int yLoc = getLocation()._2(); // The y location of the piece.
+
+    if ((getColor() == Color.BLACK && xLoc == 4) || (getColor() == Color.WHITE && xLoc == 3)) {
+      Tuple2<Integer, Integer> passant1 = new Tuple2<>(xLoc + forward, yLoc + 1);
+      Tuple2<Integer, Integer> toCheck1 = new Tuple2<>(xLoc, yLoc + 1);
+      Tuple2<Integer, Integer> passant2 = new Tuple2<>(xLoc + forward, yLoc - 1);
+      Tuple2<Integer, Integer> toCheck2 = new Tuple2<>(xLoc, yLoc - 1);
+      if (board.inBounds(passant1) && board.inBounds(toCheck1) &&
+              board.getTile(toCheck1).fold(() -> false, Tile::isOccupied) &&
+              board.getTile(passant1).fold(() -> false, t -> !t.isOccupied()) &&
+              board.getPiece(toCheck1).fold(() -> false, p -> p instanceof Pawn && !p.getColor().equals(getColor()) && p.getTimesMoved() == 1)) {
+        passant = passant.append(passant1);
+      }
+      if (board.inBounds(passant2) && board.inBounds(toCheck2) &&
+              board.getTile(toCheck2).fold(() -> false, Tile::isOccupied) &&
+              board.getTile(passant2).fold(() -> false, t -> !t.isOccupied()) &&
+              board.getPiece(toCheck2).fold(() -> false, p -> p instanceof Pawn && !p.getColor().equals(getColor()) && p.getTimesMoved() == 1)) {
+        passant = passant.append(passant2);
+      }
+
+    }
+    if (passant.isEmpty()) return Option.none();
+    return Option.of(passant);
   }
 
   private int getForward() {

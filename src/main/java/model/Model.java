@@ -110,11 +110,10 @@ public class Model {
   /**
    * Changes the piece.
    * @param location - The location of the piece.
-   * @param oldPiece - The old piece.
    * @param newPiece - The new piece.
    */
-  public void changePiece(Tuple2<Integer, Integer> location, Option<IPiece> oldPiece, Option<IPiece> newPiece) {
-    board = board.changePiece(location, oldPiece, newPiece);
+  public void changePiece(Tuple2<Integer, Integer> location, Option<IPiece> newPiece) {
+    board = board.changePiece(location, newPiece);
   }
 
   /**
