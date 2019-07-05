@@ -4,19 +4,22 @@ Written as a test of current ability.
 
 ## Setup
 Clone Repo:
-```$xslt
-https://github.com/freglyc/chess.git
+```
+git clone https://github.com/freglyc/chess.git
 ```
 Build: 
-```$xslt
+```
 ./gradlew build
 ```
 ## Run
-Upon building with gradle a jar file should be created in chess/build/libs called _chess-1.0-SNAPSHOT.jar_
+After building with gradle _chess-1.0-SNAPSHOT.jar_ will be created in chess/build/libs 
+
+```
+java -jar chess-1.0-SNAPSHOT.jar
+```
 
 ## TODO
 #### Required Functionality
-- Complete functional update
 - Add checkmate logic and connect to view
 
 #### Long Term Functionality

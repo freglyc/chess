@@ -37,7 +37,7 @@ public class Rook extends APiece {
     if (!board.inBounds(getLocation()) && board.getPiece(getLocation()).fold(()-> false, p -> p.equals(this))) return List.empty();
 
     List<Tuple2<Integer, Integer>> valid = getStraightMoves(board);
-    canCastle(board, getLocation()).fold(() -> null, valid::append);
+    if (!canCastle(board, getLocation()).isEmpty()) valid = valid.append(canCastle(board, getLocation()).get());
     return valid;
   }
 
@@ -55,7 +55,7 @@ public class Rook extends APiece {
     if (this.getTimesMoved() == 0 && board.getPiece(kingLoc).fold(() -> false,
         p -> p instanceof King && p.getTimesMoved() == 0 && p.getColor().equals(getColor()))) {
       if (location.equals(kingLoc)) return Option.of(kingLoc);
-      else if (board.getTile(location).fold(() -> false, Tile::isOccupied)) return Option.none();
+      else if (board.getTile(location).fold(() -> true, t -> t.getPiece().fold(() -> false, p -> !p.equals(this)))) return Option.none();
       else return canCastle(board, new Tuple2<>(row, kingLoc._2() > location._2() ? location._2() + 1 : location._2() - 1));
     }
     return Option.none();

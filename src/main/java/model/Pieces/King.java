@@ -46,7 +46,7 @@ public class King extends APiece {
         new Tuple2<>(xLoc + 1, yLoc - 1),
         new Tuple2<>(xLoc - 1, yLoc + 1));
     List<Tuple2<Integer, Integer>> invalidMoves = board.getPieces(getColor().equals(Color.WHITE) ? Color.BLACK : Color.WHITE).flatMap(p -> p.getValidMoves(board));
-    return potentialValid.filter(board::inBounds).filter(move -> !invalidMoves.contains(move));
+    return potentialValid.filter(board::inBounds).filter(move -> !invalidMoves.contains(move)).filter(move -> board.getPiece(move).fold(() -> true, p -> !p.getColor().equals(getColor())));
   }
 
   @Override
