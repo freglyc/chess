@@ -1,6 +1,6 @@
 # Chess Application
 Chess application coded functionally with the [vavr](https://www.vavr.io/) library.
-Written as a self test of current ability. 
+Written as a test of current ability. 
 
 ## Setup
 Clone Repo:
@@ -11,6 +11,8 @@ Build:
 ```$xslt
 ./gradlew build
 ```
+## Run
+Upon building with gradle a jar file should be created in chess/build/libs called _chess-1.0-SNAPSHOT.jar_
 
 ## TODO
 #### Required Functionality
@@ -23,4 +25,4 @@ Build:
 - Add screen resizability
 - Add settings
 - Add AI
-- Add ability to play over the same wifi
+- Add ability to play over the internet
