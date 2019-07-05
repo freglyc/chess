@@ -66,7 +66,7 @@ public abstract class APiece implements IPiece{
    */
   private List<Tuple2<Integer, Integer>> validTterator(Tuple2<Integer, Integer> location, Tuple2<Integer, Integer> iter, Board board) {
     Tuple2<Integer, Integer> currentLocation = new Tuple2<>(location._1() + iter._1(), location._2() + iter._2());
-    if (!board.inBounds(currentLocation) || (board.getTile(currentLocation).get().isOccupied() && board.getPiece(currentLocation).get().getColor().equals(color)))
+    if (!board.inBounds(location) || !board.inBounds(currentLocation) || (board.getTile(currentLocation).get().isOccupied() && board.getPiece(currentLocation).get().getColor().equals(color)))
       return List.empty();
     else if (board.getTile(currentLocation).get().isOccupied() && !board.getPiece(currentLocation).get().getColor().equals(color))
       return List.of(currentLocation);

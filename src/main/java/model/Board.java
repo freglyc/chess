@@ -202,6 +202,6 @@ public class Board {
    * @return true if in bounds, false otherwise.
    */
   public boolean inBounds(Tuple2<Integer, Integer> location) {
-    return location._1() < size._1() && location._2() < size._2();
+    return location._1() < size._1() && location._2() < size._2() && location._1() >= 0 && location._2() >= 0;
   }
 }
