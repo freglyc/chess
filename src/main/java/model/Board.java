@@ -17,6 +17,10 @@ public class Board {
    */
   private IPiece.Color turn;
   /**
+   * The number of turns that have occurred.
+   */
+  private int turnNum;
+  /**
    * Mapping of row, col to tiles.
    */
   private Map<Integer, Map<Integer, Tile>> tiles;
@@ -35,11 +39,12 @@ public class Board {
    * @param tiles - The tiles on the board.
    * @param m2v - Model 2 view adapter.
    */
-  public Board(IPiece.Color turn, Map<Integer, Map<Integer, Tile>> tiles, IModel2ViewAdapter m2v) {
+  public Board(IPiece.Color turn, Map<Integer, Map<Integer, Tile>> tiles, IModel2ViewAdapter m2v, int turnNum) {
     this.turn = turn;
     this.tiles = tiles;
     this.m2v = m2v;
     this.size = new Tuple2<>(tiles.size(), tiles.get(0).get().size());
+    this.turnNum = turnNum;
   }
 
   /**
@@ -59,6 +64,7 @@ public class Board {
     }
     this.m2v = m2v;
     this.size = size;
+    this.turnNum = 0;
   }
 
   /**
@@ -143,7 +149,7 @@ public class Board {
                 newTile = newTile.addPiece(p.get());
               }
               return new Tuple2<>(k2, newTile);
-        }))), m2v));
+        }))), m2v, turnNum));
   }
 
   /**
@@ -160,7 +166,7 @@ public class Board {
             newTile = newTile.removePiece();
           }
           return new Tuple2<>(k2, newTile);
-        }))), m2v);
+        }))), m2v, turnNum);
   }
 
   /**
@@ -261,7 +267,7 @@ public class Board {
    * @return a new board with the updated turn.
    */
   public Board toggleTurn() {
-    return turn == IPiece.Color.WHITE ? new Board(IPiece.Color.BLACK, tiles, m2v) : new Board(IPiece.Color.WHITE, tiles, m2v);
+    return turn == IPiece.Color.WHITE ? new Board(IPiece.Color.BLACK, tiles, m2v, turnNum++) : new Board(IPiece.Color.WHITE, tiles, m2v, turnNum++);
   }
 
   /**
