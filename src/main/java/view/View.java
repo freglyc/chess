@@ -117,7 +117,7 @@ public class View extends JFrame {
     bishopBtn.addActionListener((arg) -> {
       v2m.changePiece(location, color + "_BISHOP");
       frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-    });;
+    });
     JButton knightBtn = new JButton("KNIGHT");
     knightBtn.addActionListener((arg) -> {
       v2m.changePiece(location, color + "_KNIGHT");
