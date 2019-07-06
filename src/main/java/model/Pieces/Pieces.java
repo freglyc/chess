@@ -16,7 +16,6 @@ public class Pieces {
    * Singleton object.
    */
   private static final Pieces p = new Pieces();
-
   /**
    * The mapping of names to piece creation functions.
    */

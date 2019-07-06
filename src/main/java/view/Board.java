@@ -57,6 +57,12 @@ public class Board extends JPanel implements MouseListener {
     this(v2m, size, List.empty());
   }
 
+  /**
+   * Board constructor.
+   * @param v2m - The view to model adapter.
+   * @param size - The size of the board.
+   * @param pieces - A list of pieces on the board.
+   */
   public Board(IView2ModelAdapter v2m, Tuple2<Integer, Integer> size, List<IPiece> pieces) {
     this.v2m = v2m;
     this.size = size;
@@ -135,7 +141,7 @@ public class Board extends JPanel implements MouseListener {
    * @param name - The name of the piece.
    * @param location - The location of the piece.
    */
-  void addPiece(String name, Tuple2<Integer, Integer> location) {
+  public void addPiece(String name, Tuple2<Integer, Integer> location) {
     if (Images.containsKey(name)) {
       Piece piece = new Piece(name, location, new ImageIcon(Images.get(name)));
       board[piece.getPieceLocation()._1()][piece.getPieceLocation()._2()].addPiece(piece);
@@ -158,7 +164,7 @@ public class Board extends JPanel implements MouseListener {
    * If there is nothing there then does nothing.
    * @param location - the location of where to remove the piece from.
    */
-  void removePiece(Tuple2<Integer, Integer> location) {
+  public void removePiece(Tuple2<Integer, Integer> location) {
       board[location._1()][location._2()].removePiece();
       repaint();
   }
@@ -190,9 +196,7 @@ public class Board extends JPanel implements MouseListener {
 
   @Override
   public void mouseClicked(MouseEvent e) {
-
     Tile tile = (Tile) this.getComponentAt(new Point(e.getX(), e.getY()));
-
     // Selection handling.
     if (!pieceSelected && tile.isOccupied()) {
       // If a piece is not currently selected and the tile is occupied then get valid moves.
@@ -227,21 +231,21 @@ public class Board extends JPanel implements MouseListener {
 
   @Override
   public void mousePressed(MouseEvent e) {
-
+    // No-op.
   }
 
   @Override
   public void mouseReleased(MouseEvent e) {
-
+    // No-op.
   }
 
   @Override
   public void mouseEntered(MouseEvent e) {
-
+    // No-op.
   }
 
   @Override
   public void mouseExited(MouseEvent e) {
-
+    // No-op.
   }
 }

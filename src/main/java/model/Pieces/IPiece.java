@@ -5,6 +5,9 @@ import model.Board;
 import io.vavr.Tuple2;
 import io.vavr.collection.List;
 
+/**
+ * Piece interface representing a chess piece.
+ */
 public interface IPiece {
 
   /**

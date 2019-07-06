@@ -11,7 +11,7 @@ import io.vavr.Tuple2;
 public class Bishop extends APiece {
 
   /**
-   * Bishop Constructor.
+   * Bishop constructor.
    * @param color - The color of the piece. Either BLACK or WHITE.
    * @param loc - The location of the piece.
    * @param timesMoved = The number of times the piece has moved.
@@ -20,6 +20,11 @@ public class Bishop extends APiece {
     super(color, loc, timesMoved);
   }
 
+  /**
+   * New bishop constructor.
+   * @param color - The color of the piece. Either BLACK or WHITE.
+   * @param loc - The location of the piece.
+   */
   public Bishop(Color color, Tuple2<Integer, Integer> loc) {
    this(color, loc, 0);
   }
@@ -33,6 +38,7 @@ public class Bishop extends APiece {
   public List<Tuple2<Integer, Integer>> getValidMoves(Board board) {
     // Base check.
     if (!board.inBounds(getLocation()) && board.getPiece(getLocation()).fold(()-> false, p -> p.equals(this))) return List.empty();
+
     return getDiagonalMoves(board);
   }
 

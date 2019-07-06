@@ -15,6 +15,10 @@ public interface IModel2ViewAdapter {
    */
   void createBoard(Tuple2<Integer, Integer> size);
 
+  /**
+   * Draws the board in the view.
+   * @param board - The board from the model.
+   */
   void drawBoard(Board board);
 
   /**

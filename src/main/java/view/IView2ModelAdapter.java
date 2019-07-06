@@ -23,5 +23,10 @@ public interface IView2ModelAdapter {
    */
   void move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to);
 
+  /**
+   * Changes a piece on the board in the model.
+   * @param location - The location of the piece to change.
+   * @param newPiece - The new piece that will replace the old one.
+   */
   void changePiece(Tuple2<Integer, Integer> location, String newPiece);
 }

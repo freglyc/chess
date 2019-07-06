@@ -11,15 +11,20 @@ import io.vavr.Tuple2;
 public class King extends APiece {
 
   /**
-   * King Constructor.
+   * King constructor.
    * @param color - The color of the piece. Either BLACK or WHITE.
    * @param loc - The location of the piece.
-   * @param timesMoved = The number of times the piece has moved.
+   * @param timesMoved - The number of times the piece has moved.
    */
   public King(Color color, Tuple2<Integer, Integer> loc, int timesMoved) {
     super(color, loc, timesMoved);
   }
 
+  /**
+   * New king constructor.
+   * @param color - The color of the piece. Either BLACK or WHITE.
+   * @param loc - The location of the piece.
+   */
   public King(Color color, Tuple2<Integer, Integer> loc) {
     this(color, loc, 0);
   }
@@ -51,10 +56,14 @@ public class King extends APiece {
         new Tuple2<>(xLoc, yLoc - 1),
         new Tuple2<>(xLoc + 1, yLoc - 1),
         new Tuple2<>(xLoc - 1, yLoc + 1));
-
     return potentialValid.filter(board::inBounds).filter(move -> board.getPiece(move).fold(() -> true, p -> !p.getColor().equals(getColor())));
   }
 
+  /**
+   * Checks if the king is in check.
+   * @param board - The board the king lies on.
+   * @return whether or not the king is in check.
+   */
   public boolean inCheck(Board board) {
     return board.getPieces(getColor().equals(Color.WHITE) ? Color.BLACK : Color.WHITE).flatMap(p -> p.getCheckMoves(board)).contains(getLocation());
   }

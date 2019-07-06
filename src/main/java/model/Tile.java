@@ -8,6 +8,7 @@ import io.vavr.control.Option;
  * Tile in the model.
  */
 public class Tile {
+
   /**
    * The piece that sits on the tile.
    */
@@ -18,7 +19,7 @@ public class Tile {
   private Tuple2<Integer, Integer> location;
 
   /**
-   * Tile Constructor.
+   * Tile constructor.
    * @param piece - The piece on the tile.
    * @param loc - The location of the tile.
    */
@@ -28,7 +29,7 @@ public class Tile {
   }
 
   /**
-   * Other Tile Constructor.
+   * Other tile constructor.
    * Used when tile is empty.
    * @param loc - The location of the tile.
    */
@@ -55,7 +56,7 @@ public class Tile {
   /**
    * Adds a piece to the tile.
    * @param p - The piece to add.
-   * @return A new tile with the updated piece if it could be added.
+   * @return a new tile with the updated piece if it could be added.
    */
   public Tile addPiece(IPiece p) {
     if (piece.isEmpty() || piece.get().getColor() != p.getColor()) {
@@ -66,7 +67,7 @@ public class Tile {
 
   /**
    * Removes a piece from the tile.
-   * @return A new tile with the piece removed.
+   * @return a new tile with the piece removed.
    */
   public Tile removePiece() {
     return new Tile(Option.none(), location);

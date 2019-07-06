@@ -28,11 +28,11 @@ public class Tile extends JPanel {
   private boolean isSelected = false;
 
   /**
-   * Tile Constructor.
+   * Tile constructor.
    * @param location - The location of the tile.
    * @param color - The color of the tile.
    */
-  Tile (Tuple2<Integer, Integer> location, Color color) {
+  public Tile (Tuple2<Integer, Integer> location, Color color) {
     this.location = location;
     this.color = color;
     this.piece = null;
@@ -43,7 +43,7 @@ public class Tile extends JPanel {
    * isOccupied getter.
    * @return whether or not this tile is occupied
    */
-  boolean isOccupied() {
+  public boolean isOccupied() {
     return piece != null;
   }
 
@@ -51,7 +51,7 @@ public class Tile extends JPanel {
    * location getter.
    * @return the location of the tile.
    */
-  Tuple2<Integer, Integer> getTileLocation() {
+  public Tuple2<Integer, Integer> getTileLocation() {
     return location;
   }
 
@@ -60,16 +60,10 @@ public class Tile extends JPanel {
    * The tile must not have a piece to add a new one.
    * @param piece - The piece to add.
    */
-  void addPiece(Piece piece) {
+  public void addPiece(Piece piece) {
     if (this.piece == null && piece != null) {
-//      System.out.println("PIECE ADDED TO TILE");
       this.piece = piece;
-
       this.add(piece);
-//      if (this.getComponent(0).equals(piece)) {
-//        System.out.println("ADDED SUCCESSFULLY");
-//      }
-
       piece.setVisible(true);
       piece.repaint();
     }
@@ -78,7 +72,7 @@ public class Tile extends JPanel {
   /**
    * Removes a piece from the tile.
    */
-  void removePiece() {
+  public void removePiece() {
     if (piece != null) {
       piece = null;
       this.remove(0);
@@ -96,7 +90,7 @@ public class Tile extends JPanel {
   /**
    * Toggles whether or not this tile is selected by the user.
    */
-  void toggleSelected() {
+  public void toggleSelected() {
     if (isSelected) {
       this.setBackground(color);
     } else {

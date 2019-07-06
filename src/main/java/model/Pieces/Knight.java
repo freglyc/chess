@@ -11,14 +11,20 @@ import io.vavr.Tuple2;
 public class Knight extends APiece {
 
   /**
-   * Knight Constructor.
+   * Knight constructor.
    * @param color - The color of the piece. Either BLACK or WHITE.
    * @param loc - The location of the piece.
+   * @param timesMoved - The number of times the piece has moved.
    */
   public Knight(Color color, Tuple2<Integer, Integer> loc, int timesMoved) {
     super(color, loc, timesMoved);
   }
 
+  /**
+   * New knight constructor.
+   * @param color - The color of the piece. Either BLACK or WHITE.
+   * @param loc - The location of the piece.
+   */
   public Knight(Color color, Tuple2<Integer, Integer> loc) {
     this(color, loc, 0);
   }
@@ -35,7 +41,7 @@ public class Knight extends APiece {
 
     int xLoc = this.getLocation()._1();
     int yLoc = this.getLocation()._2();
-    List<Tuple2<Integer, Integer>> potentialValid = List.of(
+    List<Tuple2<Integer, Integer>> valid = List.of(
         new Tuple2<>(xLoc + 1, yLoc + 2),
         new Tuple2<>(xLoc + 2, yLoc + 1),
         new Tuple2<>(xLoc - 1, yLoc - 2),
@@ -45,8 +51,7 @@ public class Knight extends APiece {
         new Tuple2<>(xLoc - 2, yLoc + 1),
         new Tuple2<>(xLoc + 2, yLoc - 1)
     );
-    return potentialValid
-               .filter(board::inBounds)
+    return valid.filter(board::inBounds)
                .filter(move -> !board.getTile(move).get().isOccupied() ||
                                    (board.getTile(move).get().isOccupied() &&
                                         !board.getPiece(move).get().getColor().equals(getColor())));

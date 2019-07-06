@@ -14,19 +14,17 @@ public abstract class APiece implements IPiece{
    * Color of the piece.
    */
   private final Color color;
-
   /**
    * Location of the piece.
    */
   private final Tuple2<Integer, Integer> location;
-
   /**
    * The number of times this piece has moved.
    */
   private final int timesMoved;
 
   /**
-   * Piece Constructor.
+   * Piece constructor.
    * @param color - The color of the piece. Either BLACK or WHITE.
    * @param location - The location of the piece.
    * @param timesMoved = The number of times this piece has moved.

@@ -21,7 +21,7 @@ public class Model {
   private Board board;
 
   /**
-   * Model Constructor
+   * Model constructor
    * @param m2v - Model to view adapter used to connect the model to the view.
    */
   public Model(IModel2ViewAdapter m2v) {
@@ -33,7 +33,6 @@ public class Model {
    */
   public void start() {
     createBoard(new Tuple2<>(8, 8)); // Creates the board.
-
     // Adds the pieces.
     for (int a = 0; a < board.getSize()._2(); a++) {
       // Black pawns.

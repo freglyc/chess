@@ -28,9 +28,10 @@ public class Control {
   private View view;
 
   /**
-   * Control Constructor
+   * Control constructor
    */
   private Control() {
+
     model = new Model(new IModel2ViewAdapter() {
 
       @Override
@@ -77,7 +78,7 @@ public class Control {
   }
 
   /**
-   * Starts the game.
+   * Starts the chess application.
    */
   private void start() {
     model.start();

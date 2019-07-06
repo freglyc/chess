@@ -10,6 +10,9 @@ import model.Pieces.King;
 import model.Pieces.Pawn;
 import model.Pieces.Rook;
 
+/**
+ * Board model.
+ */
 public class Board {
 
   /**
@@ -34,7 +37,7 @@ public class Board {
   private Tuple2<Integer, Integer> size;
 
   /**
-   * Board Constructor.
+   * Board constructor.
    * @param turn - The current player's turn.
    * @param tiles - The tiles on the board.
    * @param m2v - Model 2 view adapter.
@@ -48,7 +51,7 @@ public class Board {
   }
 
   /**
-   * Empty Board Constructor.
+   * Empty board constructor.
    * @param size - The size of the board.
    * @param m2v - Model 2 view adapter.
    */
@@ -144,10 +147,7 @@ public class Board {
         x -> new Board(turn, tiles.map((k1, v1) -> new Tuple2<>(k1,
             v1.map((k2, v2) -> {
               Tile newTile = v2;
-              if (v2.getLocation().equals(p.get().getLocation())) {
-//                m2v.addPiece(x.toString(), v2.getLocation());
-                newTile = newTile.addPiece(p.get());
-              }
+              if (v2.getLocation().equals(p.get().getLocation())) newTile = newTile.addPiece(p.get());
               return new Tuple2<>(k2, newTile);
         }))), m2v, turnNum));
   }
@@ -161,10 +161,7 @@ public class Board {
     return new Board(turn, tiles.map((k1, v1) -> new Tuple2<>(k1,
         v1.map((k2, v2) -> {
           Tile newTile = v2;
-          if (v2.getLocation().equals(location)) {
-//            m2v.removePiece(location);
-            newTile = newTile.removePiece();
-          }
+          if (v2.getLocation().equals(location)) newTile = newTile.removePiece();
           return new Tuple2<>(k2, newTile);
         }))), m2v, turnNum);
   }
@@ -180,12 +177,12 @@ public class Board {
   }
 
   /**
-   * Moves a piece while checking chess logic. i.e. castle, en passant, etc.
+   * Moves a piece while checking for draw or checkmate.
    * @param from - Where the piece is moving from.
    * @param to - Where the piece is moving to.
    * @return a new board with the updated state.
    */
-  Board moveLogic(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
+  public Board moveLogic(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
 
     // No piece at 'from' or 'to' is not a valid move or not player's turn.
     if (getPiece(from).fold(() -> true, p -> !p.getValidMoves(this).contains(to) || p.getColor() != turn)) return this;
@@ -204,17 +201,22 @@ public class Board {
       System.out.println("CHECKMATE");
     }
     Board newBoard = moveLogicHelper(from, to);
-
+    // If the move was valid then accept and toggle turn.
     if (!kingInCheck(newBoard, color) && !newBoard.equals(this)) return newBoard.toggleTurn();
     return this;
   }
 
+  /**
+   * Helper for moveLogic that checks for en passant, castle, etc.
+   * @param from - Where the piece is moving from.
+   * @param to - Where the piece is moving to.
+   * @return a new board with the updated state.
+   */
   private Board moveLogicHelper(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
     // No piece at from or to is not a valid move.
     if (getPiece(from).fold(() -> true, p -> !p.getValidMoves(this).contains(to) || p.getColor() != turn)) return this;
 
     IPiece piece = getPiece(from).get();
-
     // Check castle.
     if (piece instanceof Rook && ((Rook) piece).canCastle(this, piece.getLocation()).fold(() -> false, move -> move.equals(to))) {
       IPiece king = getPiece(to).get();
@@ -222,22 +224,18 @@ public class Board {
       Tuple2<Integer, Integer> rookMove = new Tuple2<>(piece.getLocation()._1(), king.getLocation()._2() > piece.getLocation()._2() ? 2 : 5);
       return this.removePiece(from).removePiece(to).addPiece(Option.of(piece.move(rookMove))).addPiece(Option.of(king.move(kingMove)));
     }
-
     // Check en passant.
     if (piece instanceof Pawn && ((Pawn) piece).canPassant(this).fold(() -> false, moves -> moves.contains(to))) {
       Tuple2<Integer, Integer> pawnToRemove = new Tuple2<>(piece.getLocation()._1(), piece.getLocation()._2() > to._2() ? piece.getLocation()._2() - 1 : piece.getLocation()._2() + 1);
       return this.removePiece(pawnToRemove).move(from, to);
     }
-
     // Check pawn at end of board.
     int end = piece.getColor() == IPiece.Color.BLACK ? 7 : 0;
     if (piece instanceof Pawn && to._1() == end) {
       m2v.displayPawnPromotion(to, piece.getColor());
     }
-
     // Check capture.
     if (this.getPiece(to).fold(() -> false, p -> !p.getColor().equals(piece.getColor()))) return this.removePiece(to).move(from, to);
-
     // Normal move.
     return this.move(from, to);
   }

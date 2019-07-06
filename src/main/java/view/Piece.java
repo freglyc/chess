@@ -13,7 +13,6 @@ public class Piece extends JLabel {
    * The location of the piece.
    */
   private Tuple2<Integer, Integer> location;
-
   /**
    * The name of the piece.
    */
@@ -43,7 +42,7 @@ public class Piece extends JLabel {
    * location getter.
    * @return the location.
    */
-  Tuple2<Integer, Integer> getPieceLocation() {
+  public Tuple2<Integer, Integer> getPieceLocation() {
     return location;
   }
 
@@ -51,7 +50,7 @@ public class Piece extends JLabel {
    * Moves the piece.
    * @param to - where the piece is moved to.
    */
-  void move(Tuple2<Integer, Integer> to) {
+  public void move(Tuple2<Integer, Integer> to) {
       location = to;
   }
 }

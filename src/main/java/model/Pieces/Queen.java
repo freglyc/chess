@@ -11,14 +11,20 @@ import io.vavr.Tuple2;
 public class Queen extends APiece {
 
   /**
-   * Queen Constructor.
+   * Queen constructor.
    * @param color - The color of the piece. Either BLACK or WHITE.
    * @param loc - The location of the piece.
+   * @param timesMoved - The number of times the piece has moved.
    */
   public Queen(Color color, Tuple2<Integer, Integer> loc, int timesMoved) {
     super(color, loc, timesMoved);
   }
 
+  /**
+   * New queen constructor.
+   * @param color - The color of the piece. Either BLACK or WHITE.
+   * @param loc - The location of the piece.
+   */
   public Queen(Color color, Tuple2<Integer, Integer> loc) {
     this(color, loc, 0);
   }
@@ -34,9 +40,7 @@ public class Queen extends APiece {
     if (!board.inBounds(getLocation()) && board.getPiece(getLocation()).fold(()-> false, p -> p.equals(this))) return List.empty();
 
     List<Tuple2<Integer, Integer>> valid = List.empty();
-    valid = valid.appendAll(getStraightMoves(board));
-    valid = valid.appendAll(getDiagonalMoves(board));
-    return valid;
+    return valid.appendAll(getStraightMoves(board)).appendAll(getDiagonalMoves(board));
   }
 
   @Override
