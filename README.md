@@ -17,15 +17,3 @@ After building with gradle _chess-1.0-SNAPSHOT.jar_ will be created in chess/bui
 ```
 java -jar chess-1.0-SNAPSHOT.jar
 ```
-
-## TODO
-#### Required Functionality
-- Add checkmate logic and connect to view
-
-#### Long Term Functionality
-- Display moves on right panel
-- Make pretty pieces + make view pretty
-- Add screen resizability
-- Add settings
-- Add AI
-- Add ability to play over the internet
