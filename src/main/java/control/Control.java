@@ -39,6 +39,9 @@ public class Control {
       }
 
       @Override
+      public void drawBoard(Board board) { view.drawBoard(board); }
+
+      @Override
       public void addPiece(String piece, Tuple2<Integer, Integer> location) {
         view.addPiece(piece, location);
       }

@@ -55,6 +55,10 @@ public class King extends APiece {
     return potentialValid.filter(board::inBounds).filter(move -> board.getPiece(move).fold(() -> true, p -> !p.getColor().equals(getColor())));
   }
 
+  public boolean inCheck(Board board) {
+    return board.getPieces(getColor().equals(Color.WHITE) ? Color.BLACK : Color.WHITE).flatMap(p -> getCheckMoves(board)).contains(getLocation());
+  }
+
   @Override
   public String toString() {
     return this.getColor() + "_KING";

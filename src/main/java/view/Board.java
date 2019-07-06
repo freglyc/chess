@@ -2,6 +2,7 @@ package view;
 
 import io.vavr.Tuple2;
 import io.vavr.collection.List;
+import model.Pieces.IPiece;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -53,6 +54,10 @@ public class Board extends JPanel implements MouseListener {
    * @param size - the size of the board.
    */
   public Board(IView2ModelAdapter v2m, Tuple2<Integer, Integer> size) {
+    this(v2m, size, List.empty());
+  }
+
+  public Board(IView2ModelAdapter v2m, Tuple2<Integer, Integer> size, List<IPiece> pieces) {
     this.v2m = v2m;
     this.size = size;
     this.pieceSelected = false;
@@ -66,6 +71,8 @@ public class Board extends JPanel implements MouseListener {
 
     initBoard();
     readResources();
+    pieces.forEach(p -> addPiece(p.toString(), p.getLocation()));
+    repaint();
   }
 
   /**

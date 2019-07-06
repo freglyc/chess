@@ -96,6 +96,7 @@ public class Model {
    */
   public void move(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
     board = board.moveLogic(from, to);
+    m2v.drawBoard(board);
   }
 
   /**

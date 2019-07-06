@@ -6,6 +6,7 @@ import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import model.Pieces.IPiece;
+import model.Pieces.King;
 import model.Pieces.Pawn;
 import model.Pieces.Rook;
 
@@ -138,7 +139,7 @@ public class Board {
             v1.map((k2, v2) -> {
               Tile newTile = v2;
               if (v2.getLocation().equals(p.get().getLocation())) {
-                m2v.addPiece(x.toString(), v2.getLocation());
+//                m2v.addPiece(x.toString(), v2.getLocation());
                 newTile = newTile.addPiece(p.get());
               }
               return new Tuple2<>(k2, newTile);
@@ -155,7 +156,7 @@ public class Board {
         v1.map((k2, v2) -> {
           Tile newTile = v2;
           if (v2.getLocation().equals(location)) {
-            m2v.removePiece(location);
+//            m2v.removePiece(location);
             newTile = newTile.removePiece();
           }
           return new Tuple2<>(k2, newTile);
@@ -180,29 +181,46 @@ public class Board {
    */
   Board moveLogic(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
 
+    // No piece at 'from' or 'to' is not a valid move or not player's turn.
+    if (getPiece(from).fold(() -> true, p -> !p.getValidMoves(this).contains(to) || p.getColor() != turn)) return this;
+
+    IPiece.Color color = getPiece(from).get().getColor();
+    List<IPiece> pieces = getPieces(color);
+
+    // Check for draw.
+    if (pieces.flatMap(p -> p.getValidMoves(this)).isEmpty() && !kingInCheck(this, color)) {
+      // Draw logic
+      System.out.println("DRAW");
+    }
+    // Check for mate.
+    if (pieces.flatMap(p -> p.getValidMoves(this).map(move -> kingInCheck(moveLogicHelper(p.getLocation(), move), color))).filter(bool -> bool.equals(false)).isEmpty()) {
+      // Checkmate logic
+      System.out.println("CHECKMATE");
+    }
+    Board newBoard = moveLogicHelper(from, to);
+
+    if (!kingInCheck(newBoard, color) && !newBoard.equals(this)) return newBoard.toggleTurn();
+    return this;
+  }
+
+  private Board moveLogicHelper(Tuple2<Integer, Integer> from, Tuple2<Integer, Integer> to) {
     // No piece at from or to is not a valid move.
     if (getPiece(from).fold(() -> true, p -> !p.getValidMoves(this).contains(to) || p.getColor() != turn)) return this;
 
     IPiece piece = getPiece(from).get();
-
-    // Check king mated.
-
-    // Check draw.
-
-    // Check king in check.
 
     // Check castle.
     if (piece instanceof Rook && ((Rook) piece).canCastle(this, piece.getLocation()).fold(() -> false, move -> move.equals(to))) {
       IPiece king = getPiece(to).get();
       Tuple2<Integer, Integer> kingMove = new Tuple2<>(piece.getLocation()._1(), king.getLocation()._2() > piece.getLocation()._2() ? 1 : 6);
       Tuple2<Integer, Integer> rookMove = new Tuple2<>(piece.getLocation()._1(), king.getLocation()._2() > piece.getLocation()._2() ? 2 : 5);
-      return removePiece(from).removePiece(to).addPiece(Option.of(piece.move(rookMove))).addPiece(Option.of(king.move(kingMove))).toggleTurn();
+      return this.removePiece(from).removePiece(to).addPiece(Option.of(piece.move(rookMove))).addPiece(Option.of(king.move(kingMove)));
     }
 
     // Check en passant.
     if (piece instanceof Pawn && ((Pawn) piece).canPassant(this).fold(() -> false, moves -> moves.contains(to))) {
       Tuple2<Integer, Integer> pawnToRemove = new Tuple2<>(piece.getLocation()._1(), piece.getLocation()._2() > to._2() ? piece.getLocation()._2() - 1 : piece.getLocation()._2() + 1);
-      return removePiece(pawnToRemove).move(from, to).toggleTurn();
+      return this.removePiece(pawnToRemove).move(from, to);
     }
 
     // Check pawn at end of board.
@@ -212,10 +230,20 @@ public class Board {
     }
 
     // Check capture.
-    if (this.getPiece(to).fold(() -> false, p -> !p.getColor().equals(piece.getColor()))) return removePiece(to).move(from, to).toggleTurn();
+    if (this.getPiece(to).fold(() -> false, p -> !p.getColor().equals(piece.getColor()))) return this.removePiece(to).move(from, to);
 
     // Normal move.
-    return move(from, to).toggleTurn();
+    return this.move(from, to);
+  }
+
+  /**
+   * Determines whether the king of a specific color is in check.
+   * @param b - The board the king lies on.
+   * @param color - The color of the king.
+   * @return whether or not the king is in check.
+   */
+  private boolean kingInCheck(Board b, IPiece.Color color) {
+    return ((King) b.getPieces(color).filter(p -> p instanceof King).get(0)).inCheck(b);
   }
 
   /**

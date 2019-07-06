@@ -1,6 +1,7 @@
 package view;
 
 import io.vavr.Tuple2;
+import model.Pieces.IPiece;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -80,6 +81,14 @@ public class View extends JFrame {
     boardPanel = new Board(v2m, size);
     contentPane.add(boardPanel);
 //    splitPane.setLeftComponent(boardPanel);
+  }
+
+  public void drawBoard(model.Board board) {
+    contentPane.remove(boardPanel);
+    boardPanel = new Board(v2m, board.getSize(), board.getPieces(IPiece.Color.WHITE).appendAll(board.getPieces(IPiece.Color.BLACK)));
+    contentPane.add(boardPanel);
+    contentPane.revalidate();
+    boardPanel.repaint();
   }
 
   /**
