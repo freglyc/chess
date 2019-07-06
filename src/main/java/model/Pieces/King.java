@@ -56,7 +56,7 @@ public class King extends APiece {
   }
 
   public boolean inCheck(Board board) {
-    return board.getPieces(getColor().equals(Color.WHITE) ? Color.BLACK : Color.WHITE).flatMap(p -> getCheckMoves(board)).contains(getLocation());
+    return board.getPieces(getColor().equals(Color.WHITE) ? Color.BLACK : Color.WHITE).flatMap(p -> p.getCheckMoves(board)).contains(getLocation());
   }
 
   @Override
