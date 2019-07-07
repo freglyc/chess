@@ -9,8 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,18 +121,18 @@ public class Board extends JPanel implements MouseListener {
   private void readResources() {
     try {
       // Read in images.
-      Images.put("BLACK_PAWN", ImageIO.read(new File("src/main/resources/bpawn.png")));
-      Images.put("WHITE_PAWN", ImageIO.read(new File("src/main/resources/wpawn.png")));
-      Images.put("BLACK_ROOK", ImageIO.read(new File("src/main/resources/brook.png")));
-      Images.put("WHITE_ROOK", ImageIO.read(new File("src/main/resources/wrook.png")));
-      Images.put("BLACK_KNIGHT", ImageIO.read(new File("src/main/resources/bknight.png")));
-      Images.put("WHITE_KNIGHT", ImageIO.read(new File("src/main/resources/wknight.png")));
-      Images.put("BLACK_BISHOP", ImageIO.read(new File("src/main/resources/bbishop.png")));
-      Images.put("WHITE_BISHOP", ImageIO.read(new File("src/main/resources/wbishop.png")));
-      Images.put("BLACK_QUEEN", ImageIO.read(new File("src/main/resources/bqueen.png")));
-      Images.put("WHITE_QUEEN", ImageIO.read(new File("src/main/resources/wqueen.png")));
-      Images.put("BLACK_KING", ImageIO.read(new File("src/main/resources/bking.png")));
-      Images.put("WHITE_KING", ImageIO.read(new File("src/main/resources/wking.png")));
+      Images.put("BLACK_PAWN", ImageIO.read(getClass().getResourceAsStream("/bpawn.png")));
+      Images.put("WHITE_PAWN", ImageIO.read(getClass().getResourceAsStream("/wpawn.png")));
+      Images.put("BLACK_ROOK", ImageIO.read(getClass().getResourceAsStream("/brook.png")));
+      Images.put("WHITE_ROOK", ImageIO.read(getClass().getResourceAsStream("/wrook.png")));
+      Images.put("BLACK_KNIGHT", ImageIO.read(getClass().getResourceAsStream("/bknight.png")));
+      Images.put("WHITE_KNIGHT", ImageIO.read(getClass().getResourceAsStream("/wknight.png")));
+      Images.put("BLACK_BISHOP", ImageIO.read(getClass().getResourceAsStream("/bbishop.png")));
+      Images.put("WHITE_BISHOP", ImageIO.read(getClass().getResourceAsStream("/wbishop.png")));
+      Images.put("BLACK_QUEEN", ImageIO.read(getClass().getResourceAsStream("/bqueen.png")));
+      Images.put("WHITE_QUEEN", ImageIO.read(getClass().getResourceAsStream("/wqueen.png")));
+      Images.put("BLACK_KING", ImageIO.read(getClass().getResourceAsStream("/bking.png")));
+      Images.put("WHITE_KING", ImageIO.read(getClass().getResourceAsStream("/wking.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }
