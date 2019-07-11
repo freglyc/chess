@@ -60,7 +60,7 @@ public abstract class APiece implements IPiece{
    * @param location - The location of the piece.
    * @param iter - The way to iterate over the board.
    * @param board - The board the piece lies on.
-   * @return A list of valid moves.
+   * @return a list of valid moves.
    */
   private List<Tuple2<Integer, Integer>> validTterator(Tuple2<Integer, Integer> location, Tuple2<Integer, Integer> iter, Board board) {
     Tuple2<Integer, Integer> currentLocation = new Tuple2<>(location._1() + iter._1(), location._2() + iter._2());
@@ -74,26 +74,26 @@ public abstract class APiece implements IPiece{
   /**
    * Gets valid moves in the straight directions.
    * @param board - The board the piece lies on.
-   * @return A list of valid straight moves.
+   * @return a list of valid straight moves.
    */
   List<Tuple2<Integer, Integer>> getStraightMoves(Board board) {
     List<Tuple2<Integer, Integer>> valid = List.empty();
-    return valid.appendAll(validTterator(location, new Tuple2<>(0, 1), board).iterator())
-                .appendAll(validTterator(location, new Tuple2<>(0, -1), board).iterator())
-                .appendAll(validTterator(location, new Tuple2<>(1, 0), board).iterator())
-                .appendAll(validTterator(location, new Tuple2<>(-1, 0), board).iterator());
+    return valid.appendAll(validTterator(location, new Tuple2<>(0, 1), board))
+                .appendAll(validTterator(location, new Tuple2<>(0, -1), board))
+                .appendAll(validTterator(location, new Tuple2<>(1, 0), board))
+                .appendAll(validTterator(location, new Tuple2<>(-1, 0), board));
   }
 
   /**
    * Gets valid moves in the diagonal directions.
    * @param board - The board the piece lies on.
-   * @return A list of valid diagonal moves.
+   * @return a list of valid diagonal moves.
    */
   List<Tuple2<Integer, Integer>> getDiagonalMoves(Board board) {
     List<Tuple2<Integer, Integer>> valid = List.empty();
-    return valid.appendAll(validTterator(location, new Tuple2<>(1, 1), board).iterator())
-               .appendAll(validTterator(location, new Tuple2<>(1, -1), board).iterator())
-               .appendAll(validTterator(location, new Tuple2<>(-1, 1), board).iterator())
-               .appendAll(validTterator(location, new Tuple2<>(-1, -1), board).iterator());
+    return valid.appendAll(validTterator(location, new Tuple2<>(1, 1), board))
+               .appendAll(validTterator(location, new Tuple2<>(1, -1), board))
+               .appendAll(validTterator(location, new Tuple2<>(-1, 1), board))
+               .appendAll(validTterator(location, new Tuple2<>(-1, -1), board));
   }
 }

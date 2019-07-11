@@ -68,6 +68,8 @@ public class Model {
     addPiece(new King(APiece.Color.BLACK, new Tuple2<>(0, 4)));
     // White King.
     addPiece(new King(APiece.Color.WHITE, new Tuple2<>(7, 4)));
+
+    m2v.drawBoard(board);
   }
 
   /**
@@ -76,7 +78,7 @@ public class Model {
    */
   private void createBoard(Tuple2<Integer, Integer> size) {
     board = new Board(size, m2v); // Creates a base board in the model.
-    m2v.createBoard(board.getSize()); // Creates the board in the view.
+//    m2v.createBoard(board.getSize()); // Creates the board in the view.
   }
 
   /**
@@ -85,7 +87,7 @@ public class Model {
    */
   private void addPiece(IPiece piece) {
     board = board.addPiece(Option.of(piece)); // Adds to model.
-    m2v.addPiece(piece.toString(), piece.getLocation()); // Adds to the view.
+//    m2v.addPiece(piece.toString(), piece.getLocation()); // Adds to the view.
   }
 
   /**
@@ -114,6 +116,7 @@ public class Model {
    */
   public void changePiece(Tuple2<Integer, Integer> location, Option<IPiece> newPiece) {
     board = board.changePiece(location, newPiece);
+    m2v.drawBoard(board);
   }
 
   /**

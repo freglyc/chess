@@ -158,12 +158,13 @@ public class Board {
    * @return a new board with the piece removed.
    */
   public Board removePiece(Tuple2<Integer, Integer> location) {
-    return new Board(turn, tiles.map((k1, v1) -> new Tuple2<>(k1,
-        v1.map((k2, v2) -> {
-          Tile newTile = v2;
-          if (v2.getLocation().equals(location)) newTile = newTile.removePiece();
-          return new Tuple2<>(k2, newTile);
-        }))), m2v, turnNum);
+    return this.getPiece(location).fold(() -> this,
+        x -> new Board(turn, tiles.map((k1, v1) -> new Tuple2<>(k1,
+            v1.map((k2, v2) -> {
+              Tile newTile = v2;
+              if (v2.getLocation().equals(location)) newTile = newTile.removePiece();
+              return new Tuple2<>(k2, newTile);
+            }))), m2v, turnNum));
   }
 
   /**
