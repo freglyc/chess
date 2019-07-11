@@ -25,6 +25,10 @@ public class View extends JFrame {
    * Panel that holds the chess board.
    */
   private Board boardPanel;
+  /**
+   * Panel that holds all game output.
+   */
+  private Info infoPanel;
 
   /**
    * View constructor.
@@ -40,16 +44,21 @@ public class View extends JFrame {
    * Initializes the GUI.
    */
   private void initGUI() {
+    this.setResizable(false);
     // Basic setup.
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setBounds(100, 100, 600, 600);
+    setBounds(100, 100, 800, 600);
     // Main content pane.
     contentPane = new JPanel();
     contentPane.setBackground(Color.LIGHT_GRAY);
     contentPane.setToolTipText("Main Content Pane");
-    contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+//    contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
     contentPane.setLayout(new BorderLayout(0, 0));
     setContentPane(contentPane);
+
+    infoPanel = new Info();
+    infoPanel.setPreferredSize(new Dimension(200, 600));
+    contentPane.add(infoPanel, BorderLayout.LINE_END);
   }
 
   /**
@@ -58,7 +67,7 @@ public class View extends JFrame {
    */
   public void createBoard(Tuple2<Integer, Integer> size) {
     boardPanel = new Board(v2m, size);
-    contentPane.add(boardPanel);
+    contentPane.add(boardPanel, BorderLayout.CENTER);
   }
 
   /**
@@ -66,11 +75,15 @@ public class View extends JFrame {
    * @param board - The board from the model.
    */
   public void drawBoard(model.Board board) {
-    contentPane.remove(boardPanel);
+    if (contentPane.getComponentCount() > 1) contentPane.remove(boardPanel);
     boardPanel = new Board(v2m, board.getSize(), board.getPieces(IPiece.Color.WHITE).appendAll(board.getPieces(IPiece.Color.BLACK)));
-    contentPane.add(boardPanel);
+    boardPanel.setPreferredSize(new Dimension(600, 600));
+    contentPane.add(boardPanel, BorderLayout.CENTER);
+//    infoPanel.addMove("test");
+//    txtArea.append("1");
     contentPane.revalidate();
     boardPanel.repaint();
+    infoPanel.repaint();
   }
 
   /**
