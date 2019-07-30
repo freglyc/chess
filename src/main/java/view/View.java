@@ -66,7 +66,7 @@ public class View extends JFrame {
    * @param board - The board from the model.
    */
   public void drawBoard(model.Board board) {
-    contentPane.remove(boardPanel);
+    if (contentPane.getComponentCount() >= 1) contentPane.remove(boardPanel);
     boardPanel = new Board(v2m, board.getSize(), board.getPieces(IPiece.Color.WHITE).appendAll(board.getPieces(IPiece.Color.BLACK)));
     contentPane.add(boardPanel);
     contentPane.revalidate();
