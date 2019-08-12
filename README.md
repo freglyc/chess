@@ -12,8 +12,8 @@ Build:
 ./gradlew build
 ```
 ## Run
-After building with gradle _chess-1.0-SNAPSHOT.jar_ will be created in chess/build/libs 
+After building with gradle _chess.jar_ will be created in chess/build/libs 
 
 ```
-java -jar chess-1.0-SNAPSHOT.jar
+java -jar chess.jar
 ```
