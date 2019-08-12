@@ -59,11 +59,15 @@ interface Option<T> {
      */
     fun getOrElse(alternative: T): T = match({ alternative }, { it })
 
-    fun filter()
+    /**
+     * Runs predicate on contents. If true returns some, else returns none.
+     */
+    fun filter(predicate: (T) -> Boolean): Option<T> = map { if (predicate.invoke(it)) this else none() }
 
-    fun map()
-
-    fun <R> flatmap(func: (T) -> Option<out R>): Option<R> = match({ none() }, { narrow(func.invoke(it)) })
+    /**
+     * Returns a new option with the function applied to it if it exists.
+     */
+    fun <R> map(func: (T) -> Option<out R>): Option<R> = match({ none() }, { narrow(func.invoke(it)) })
 
     /**
      * Some.
@@ -73,6 +77,16 @@ interface Option<T> {
         override fun isSome(): Boolean = true
 
         override fun get(): T = value
+
+        override fun equals(other: Any?): Boolean {
+            if (other !is Some<*>) return false
+            if (get() == other.get()) return true
+            return false
+        }
+
+        override fun toString(): String = "Some(${get().toString()})"
+
+        override fun hashCode(): Int = 0
     }
 
     /**
@@ -85,5 +99,11 @@ interface Option<T> {
         override fun isSome(): Boolean = false
 
         override fun get(): T = throw NoSuchElementException("can't get() from Option.None")
+
+        override fun equals(other: Any?): Boolean = other is None<*>
+
+        override fun toString(): String = "None()"
+
+        override fun hashCode(): Int = 0
     }
 }
